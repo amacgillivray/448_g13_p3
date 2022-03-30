@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 74 54.33947">
+  <defs>
+    <style>
+      .n {
+        fill: #231f20;
+        font-family: MyriadPro-Regular, Myriad Pro;
+        font-size: 12px;
+      }
+
+      .o {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <g id="a" data-name="Layer 1"/>
+  <g id="b" data-name="Layer 2">
+    <g id="c" data-name="originals">
+      <g id="d" data-name="helicopter">
+        <rect class="o" x=".5" y="12.83947" width="73" height="41"/>
+        <g>
+          <polygon class="o" points="37 30.92195 15.83874 24.49375 15.83874 37.35015 37 30.92195"/>
+          <polygon class="o" points="37 30.92194 58.16126 24.49374 58.16126 37.35014 37 30.92194"/>
+          <g>
+            <line class="o" x1="37.00001" y1="37.64798" x2="37.00001" y2="24.84549"/>
+            <polygon points="41.98634 26.30448 37.00001 17.66926 32.01367 26.30448 41.98634 26.30448"/>
+          </g>
+          <text class="n" transform="translate(33.32793 47.91273)"><tspan x="0" y="0">A</tspan></text>
+        </g>
+        <g>
+          <text id="e" data-name="fandm" class="n" transform="translate(33.70599 10.04406)"><tspan x="0" y="0">ø</tspan></text>
+          <text id="f" data-name="fireteam" class="n" transform="translate(32.86605 10.50005)"><tspan x="0" y="0">Ø</tspan></text>
+          <text id="g" data-name="patrol" class="n" transform="translate(35.30801 11.01608)"><tspan x="0" y="0">•</tspan></text>
+          <text id="h" data-name="section" class="n" transform="translate(33.61569 11.01632)"><tspan x="0" y="0">••</tspan></text>
+          <text id="i" data-name="platoon" class="n" transform="translate(31.92396 11.01643)"><tspan x="0" y="0">•••</tspan></text>
+          <text id="j" data-name="company" class="n" transform="translate(35.5657 10.50003)"><tspan x="0" y="0">I</tspan></text>
+          <text id="k" data-name="battalion" class="n" transform="translate(34.13214 11.01643)"><tspan x="0" y="0">II</tspan></text>
+          <text id="l" data-name="regiment" class="n" transform="translate(32.69781 11.0164)"><tspan x="0" y="0">III</tspan></text>
+          <text id="m" data-name="brigade" class="n" transform="translate(33.57382 11.01609)"><tspan x="0" y="0">X</tspan></text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 74 54.33947">
+  <defs>
+    <style>
+      .n {
+        fill: #231f20;
+        font-family: MyriadPro-Regular, Myriad Pro;
+        font-size: 12px;
+      }
+
+      .o {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <g id="a" data-name="Layer 1"/>
+  <g id="b" data-name="Layer 2">
+    <g id="c" data-name="originals">
+      <g id="d" data-name="infantry">
+        <rect class="o" x=".5" y="12.83947" width="73" height="41"/>
+        <line class="o" x1=".5" y1="53.83947" x2="73.5" y2="12.83947"/>
+        <line class="o" x1="73.5" y1="53.83947" x2=".5" y2="12.83947"/>
+        <g>
+          <text id="e" data-name="fandm" class="n" transform="translate(33.70632 10.04401)"><tspan x="0" y="0">ø</tspan></text>
+          <text id="f" data-name="fireteam" class="n" transform="translate(32.86639 10.5)"><tspan x="0" y="0">Ø</tspan></text>
+          <text id="g" data-name="patrol" class="n" transform="translate(35.30835 11.01603)"><tspan x="0" y="0">•</tspan></text>
+          <text id="h" data-name="section" class="n" transform="translate(33.61602 11.01627)"><tspan x="0" y="0">••</tspan></text>
+          <text id="i" data-name="platoon" class="n" transform="translate(31.9243 11.01638)"><tspan x="0" y="0">•••</tspan></text>
+          <text id="j" data-name="company" class="n" transform="translate(35.56603 10.49998)"><tspan x="0" y="0">I</tspan></text>
+          <text id="k" data-name="battalion" class="n" transform="translate(34.13247 11.01637)"><tspan x="0" y="0">II</tspan></text>
+          <text id="l" data-name="regiment" class="n" transform="translate(32.69814 11.01634)"><tspan x="0" y="0">III</tspan></text>
+          <text id="m" data-name="brigade" class="n" transform="translate(33.57416 11.01604)"><tspan x="0" y="0">X</tspan></text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
