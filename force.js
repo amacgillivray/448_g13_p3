@@ -1,7 +1,7 @@
 class Force{
-	constrctor(pos, unitList){
+	constrctor(pos){
 		this.position = pos;
-		this.Units = unitList;
+		this.Units = document.getElementsByClassName(pos);
 	}
 
 	//getters
