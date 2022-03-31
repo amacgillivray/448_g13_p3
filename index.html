@@ -5,11 +5,35 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Project 3</title>
         <style>
+            html, body {
+                padding: 0;
+                margin: 0;
+                background-color: #7e7e7e;
+            }
+
             svg {
                 display: block;
-                width: 48%;
-                height: auto;
+                width: auto;
+                max-width: 98%;
+                height: 90vh;
                 margin: auto;
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+            }
+
+            .top {
+                background-color: #3e3e3e;
+                color: #eee;
+                margin-bottom: 15px;
+            }
+
+            #title {
+                display: block;
+                text-align: center;
+                margin: 0 auto;
+                padding: 15px;
+                font-size: 1.32em;
             }
         </style>
     </head>
@@ -135,6 +159,34 @@
             .tc_h {
                 display: none
             }
+
+            /*.unit.blufor rect,*/
+            .blufor_shape {
+                fill: #85d4ef;
+                opacity: 0.6;
+            }
+
+            /*.unit.opfor rect,*/
+            .opfor_shape {
+                fill: #ef2444;
+                opacity: 0.6;
+            }
+
+            .unit:hover {
+                cursor: pointer;
+            }
+
+            .unit:hover .blufor_shape,
+            .unit:hover .opfor_shape {
+                opacity: 0.8;
+            }
+
+            .unit.selected .blufor_shape,
+            .unit.selected .opfor_shape
+            {
+                opacity: 0.9;
+                stroke: #00f;
+            }
             </style>
         </defs>
         <g id="regions">
@@ -223,8 +275,8 @@
             <path class="cls-10" d="M5.70941,145.20481l-.55371-3.96094c.21973-.03125,22.0625-3.10938,29.66113-6.15234,3.0332-1.21533,5.55762-3.15039,7.99854-5.02197,3.60107-2.76025,7.33691-5.62891,12.2207-5.43945,3.54443,.12256,6.4624-1.00928,10.16211-2.44824,3.08545-1.19922,6.58203-2.55908,11.10645-3.39209,9.48926-1.74805,25.99561-8.0498,27.75488-9.61133,.5918-.69678,1.73047-1.25684,3.61719-2.18555,4.29053-2.11084,11.47119-5.64453,12.46045-12.07275,.57471-3.73828,1.73096-7.68652,2.84863-11.50488,1.82666-6.24023,3.71582-12.69287,2.55713-17.03711-1.92285-7.20898-3.97705-17.11035-2.84375-23.34131,.25195-1.38672,.52441-4.35059,.83984-7.78271,1.30811-14.22998,2.67627-26.26074,6.1875-29.35889l2.64648,2.99902c-2.60596,2.29932-4.12207,18.79736-4.85059,26.72607-.3374,3.67139-.604,6.57129-.8877,8.13232-.78076,4.29346,.2041,11.9624,2.77344,21.59473,1.44629,5.42529-.51123,12.1123-2.5835,19.19189-1.08154,3.69336-2.19922,7.5127-2.73438,10.98926-1.30615,8.48828-9.98486,12.75928-14.64746,15.05371-.9707,.47754-2.17871,1.07178-2.45996,1.31982-2.19141,2.56201-21.27979,9.22363-29.95361,10.82129-4.15186,.76514-7.31885,1.99609-10.38135,3.18701-3.80029,1.47754-7.3877,2.87549-11.75439,2.7168-3.47314-.11963-6.32666,2.07324-9.64453,4.61719-2.53174,1.94092-5.40137,4.14062-8.94482,5.56006-8.04834,3.22363-29.67773,6.27246-30.59473,6.40039Z"/>
         </g>
         <g id="Layer_8" data-name="Layer 8">
-            <g id="bf_infantry" class="a0">
-            <rect class="cls-8" x="32.6027" y="62.20311" width="28.69425" height="16.11595"/>
+            <g id="bf_infantry" class="a0 unit blufor">
+            <rect class="cls-8 blufor_shape" x="32.6027" y="62.20311" width="28.69425" height="16.11595"/>
             <line class="cls-8" x1="32.6027" y1="78.31906" x2="61.29696" y2="62.20311"/>
             <line class="cls-8" x1="61.29696" y1="78.31906" x2="32.6027" y2="62.20311"/>
             <g>
@@ -239,8 +291,8 @@
                 <text id="brigade" class="cls-3" transform="translate(45.60307 61.48686)"><tspan x="0" y="0">X</tspan></text>
             </g>
             </g>
-            <g id="bf_helicopter" class="a0">
-            <rect class="cls-8" x="24.2848" y="86.52931" width="28.69425" height="16.11595"/>
+            <g id="bf_helicopter" class="a0 unit blufor selected">
+            <rect class="cls-8 blufor_shape" x="24.2848" y="86.52931" width="28.69425" height="16.11595"/>
             <g>
                 <polygon class="cls-8" points="38.63193 93.63703 30.31403 91.11028 30.31403 96.16378 38.63193 93.63703"/>
                 <polygon class="cls-8" points="38.63193 93.63703 46.94983 91.11028 46.94983 96.16377 38.63193 93.63703"/>
@@ -262,8 +314,8 @@
                 <text id="brigade-2" data-name="brigade" class="cls-3 tc_h" transform="translate(37.28531 85.8131)"><tspan x="0" y="0">X</tspan></text>
             </g>
             </g>
-            <g id="bf_armor" class="a0">
-            <rect class="cls-8" x="59.30507" y="95.15847" width="28.69425" height="16.11595"/>
+            <g id="bf_armor" class="a0 unit blufor">
+            <rect class="cls-8 blufor_shape" x="59.30507" y="95.15847" width="28.69425" height="16.11595"/>
             <rect class="cls-8" x="63.71667" y="99.45612" width="19.87104" height="7.52064" rx="3.76032" ry="3.76032"/>
             <g>
                 <text id="fandm-3" data-name="fandm" class="cls-3 tc_h" transform="translate(72.35712 94.01603)"><tspan x="0" y="0">ø</tspan></text>
@@ -277,8 +329,8 @@
                 <text id="brigade-3" data-name="brigade" class="cls-3 tc_h" transform="translate(72.30536 94.39884)"><tspan x="0" y="0">X</tspan></text>
             </g>
             </g>
-            <g id="of_infantry" class="a1">
-            <rect class="cls-8" x="180.31748" y="83.48292" width="17.21818" height="17.21818" transform="translate(-9.78357 160.56439) rotate(-45)"/>
+            <g id="of_infantry" class="a1 unit opfor">
+            <rect class="cls-8 opfor_shape" x="180.31748" y="83.48292" width="17.21818" height="17.21818" transform="translate(-9.78357 160.56439) rotate(-45)"/>
             <line class="cls-8" x1="182.83903" y1="98.17956" x2="195.01412" y2="86.00446"/>
             <line class="cls-8" x1="195.01412" y1="98.17956" x2="182.83903" y2="86.00446"/>
             <g>
@@ -293,8 +345,8 @@
                 <text id="brigade-4" data-name="brigade" class="cls-2" transform="translate(187.66444 78.80411)"><tspan x="0" y="0">X</tspan></text>
             </g>
             </g>
-            <g id="of_armor" class="a1">
-            <rect class="cls-8" x="167.678" y="112.65221" width="17.21818" height="17.21818" transform="translate(-34.11139 160.17041) rotate(-45)"/>
+            <g id="of_armor" class="a1 unit opfor">
+            <rect class="cls-8 opfor_shape" x="167.678" y="112.65221" width="17.21818" height="17.21818" transform="translate(-34.11139 160.17041) rotate(-45)"/>
             <g>
                 <text id="fandm-5" data-name="fandm" class="cls-2 tc_h" transform="translate(175.07329 107.61501)"><tspan x="0" y="0">ø</tspan></text>
                 <text id="fireteam-5" data-name="fireteam" class="cls-2 tc_h" transform="translate(174.76469 107.78298)"><tspan x="0" y="0">Ø</tspan></text>
@@ -308,8 +360,8 @@
             </g>
             <rect class="cls-8" x="168.89208" y="118.3145" width="14.79003" height="5.8936" rx="2.72829" ry="2.72829"/>
             </g>
-            <g id="of_heliopter" class="a1">
-            <rect class="cls-8" x="167.67798" y="57.20412" width="17.21818" height="17.21818" transform="translate(5.09632 143.93003) rotate(-45)"/>
+            <g id="of_heliopter" class="a1 unit opfor">
+            <rect class="cls-8 opfor_shape" x="167.67798" y="57.20412" width="17.21818" height="17.21818" transform="translate(5.09632 143.93003) rotate(-45)"/>
             <g>
                 <polygon class="cls-8" points="176.28707 65.98563 168.49233 63.61781 168.49233 68.35346 176.28707 65.98563"/>
                 <polygon class="cls-8" points="176.28707 65.98563 184.08182 63.6178 184.08182 68.35346 176.28707 65.98563"/>
