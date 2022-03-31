@@ -1,17 +1,33 @@
 class Unit{
 	constructor(type, position, count, side){
 
-// For Andrew: get the inheritance to work properly for the unit
-
 		this.side = side;
-		this.health = 100*count;
-		this.type = type; //maybe use templates for each type
+        
+		if(type == "Inf"){
+			this.dmgMod = 2;
+			this.hpMod = 10;
+		}else if(type == "Hel"){
+			this.dmgMod = 100;
+			this.hpMod = 125;
+		}else{
+			this.dmgMod = 100;
+			this.hpMod = 250;
+		}
+
+		this.health = this.hpMod * count;
+		this.type = type;
 		this.position = position;
 		// this.movement = 
 		// make a dom to attach to the visual element
 	}
 
 	//getters
+	get hpMod(){
+		return this._hpMod;
+	}
+	get dmgMod(){
+		return this._dmgMod;
+	}
 	get side(){
 		return this._side;
 	}
@@ -25,12 +41,12 @@ class Unit{
 		return this._health;
 	}
 	get count(){
-		return Math.ceil((this.health)/100);
+		return Math.ceil((this.health) / (this.hpMod));
 	}
 
 	//setters
-	set health(dmg){
-		this._health = this.health - dmg;
+	set health(hp){
+		this._health = hp;
 	}
 	set position(pos){
 		this._position = pos;
@@ -38,57 +54,33 @@ class Unit{
 	set count(ct){
 		this._count = ct;
 	}
+	set side(sd){
+		this._side = sd;
+	}
+	set dmgMod(dm){
+		this._dmgMod = dm;
+	}
+	set hpMod(hm){
+		this._hpMod = hm;
+	}
+	set type(t){
+	    this._type = t;
+	}
 	
 	//methods
 	//movement calc(){
 		// mov = movementFunction(position.terrain, this.type)
 		// this.movement = mov;
 	// }
-
-}
-
-class Infantry extends Unit{
-	constructor(){
-		this.hpMod = 10;
-		this.dmgMod = 2;
-	}
-
-	//getters
-	get hpMod(){
-		return this._hpMod;
-	}
-	get dmgMod(){
-		return this._dmgMod;
+	updateHealth(dmg){
+		this.health = this.health - dmg; 
 	}
 
 }
 
-class Helicopter extends Unit{
-	constructor(){
-		this.hpMod = 100;
-		this.dmgMod = 125;
-	}
-
-	//getters
-	get hpMod(){
-		return this._hpMod;
-	}
-	get dmgMod(){
-		return this._dmgMod;
-	}
-}
-
-class Tank extends Unit{
-	constructor(){
-		this.hpMod = 250;
-		this.dmgMod = 100;
-	}
-
-	//getters
-	get hpMod(){
-		return this._hpMod;
-	}
-	get dmgMod(){
-		return this._dmgMod;
-	}
-}
+let test = new Unit("Inf", 1, 100, "A");
+console.log(test.type);
+console.log(test.health);
+console.log(test.hpMod);
+console.log(test.count);
+console.log(test.side);
