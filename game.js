@@ -242,9 +242,9 @@ class Force{
 	}
 
 	//methods
-	alterForce(operation, list){
+	alterForce(list){
 		for(i = 0; i < 3; i++){
-			this._unitList[i].alterUnits(operation, list[i]);
+			this._unitList[i].alterUnits(list[i]);
 		}
 	}
 
