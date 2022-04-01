@@ -331,12 +331,8 @@ class Unit{
 	updateHealth(dmg){
 		this.health = this.health - dmg; 
 	}
-	alterUnits(operation, cnt){
-		op = 1;
-		if(operation == "remove"){
-			op = -1;
-		}
-		this.count = this.count + op * cnt;
+	alterUnits(cnt){
+		this.count = this.count + cnt;
 	}
 
 }
