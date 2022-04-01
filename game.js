@@ -14,6 +14,15 @@
 const troop_count_attr = "data-count";
 
 /**
+ * @brief troop type names as used in troop icon IDs in the game's SVG doc.
+ */
+const troop_type_names = [
+    "infantry",
+    "armor",
+    "helicopter"
+];
+
+/**
  * @brief use these ids to select a regional polygon
  */
 const region_polygon_ids = [
@@ -122,11 +131,36 @@ class GameMap {
         document.getElementById(region_phonetic).className = "region " + owner;
     }
 
+    /**
+     * @brief Returns an array of Unit objects based on the troops present in the region.
+     * @param {string} region_letter 
+     * @returns 
+     */
     static getUnitsInRegion( region_letter )
     {
+        let units = [];
+        let team = document.getElementById(region_letter.toUpperCase()).classList.item(1);
         
-    }
+        // If the region is empty, return
+        if (team == "neutral") return units;
 
+        // otherwise, get the correct prefix for the team whose troops are present
+        team = (team == "blufor") ? team = blufor_prefix : team = opfor_prefix;
+
+        // then get each troop in the region
+        troop_type_names.forEach((unitType) => {
+            // node id format: [teamprefix]_[regionletter]_[trooptype]
+            let selector = team + "_" + region_letter.toLowerCase() + "_" + unitType;
+            let node = document.getElementById(selector);
+            if (node.classList.contains("t"))
+            {
+                // parse the node into a unit object
+                units.push( new Unit(unitType, region_letter, node.getAttribute("data-count"), team) );
+            }
+        });
+        
+        return units;
+    }
 }
 
 /**
@@ -182,7 +216,8 @@ class Force{
  * @brief represents an individual troop type (infantry, helicopter, or armor)
  */
 class Unit{
-	constructor(type, position, count, side){
+
+    constructor(type, position, count, side){
 
 		this.side = side;
         
@@ -285,3 +320,5 @@ function initialize_troops()
     //     let n
     // })   
 }
+
+console.log(GameMap.getUnitsInRegion("A"));
