@@ -18,8 +18,8 @@ const troop_count_attr = "data-count";
  */
 const troop_type_names = [
     "infantry",
-    "armor",
-    "helicopter"
+    "helicopter",
+    "armor"
 ];
 
 /**
@@ -172,6 +172,8 @@ class GameMap {
             {
                 // parse the node into a unit object
                 units.push( new Unit(unitType, region_letter, node.getAttribute("data-count"), team) );
+            } else {
+                units.push( null );
             }
         });
         
@@ -194,38 +196,41 @@ class GameMap {
 class Force{
     
 	constructor(region_group_id){
-		this.region = region_group_id;
-        this.units = GameMap.getUnitsInRegion(region_group_id);
-        if (this.units.length == 0)
-            this.side = "neutral";
-        else
-            this.side = this.units[0].side;
+		this._region = region_group_id;
+        this._unitList = GameMap.getUnitsInRegion(region_group_id);
+        this._side = "neutral";
+        troop_type_names.forEach((name, i) => {
+            if (this._unitList[i] != null)
+            {
+                this._side = this._unitList[0].side;
+            }
+        });
 	}
 
 	//getters
-	get position(){
-		return this._position;
+	get region(){
+		return this._region;
 	}
 	get unitList(){
 		return this._unitList;
 	}
-	get inf(){
+	get infantry(){
 		return this._unitList[0];
 	}
-	get hel(){
+	get helicopter(){
 		return this._unitList[1];
 	}
-	get tank(){
+	get armor(){
 		return this._unitList[2];
 	}
-	get infCount(){
-		return this._unitList[0].count;
+	get infantryCount(){
+		return (this.unitList[0] == null) ? 0 : this._unitList[0].count;
 	}
-	get helCount(){
-		return this._unitList[1].count;
+	get helicopterCount(){
+		return (this.unitList[1] == null) ? 0 : this._unitList[1].count;
 	}
-	get tankCount(){
-		return this._unitList[2].count;
+	get armorCount(){
+		return (this.unitList[2] == null) ? 0 : this._unitList[2].count;
 	}
 
 	//setters
@@ -252,7 +257,7 @@ class Unit{
 
     constructor(type, position, count, side){
 
-		this.side = side;
+		this._side = side;
         
 		if(type == "Inf"){
 			this.dmgMod = 2;
