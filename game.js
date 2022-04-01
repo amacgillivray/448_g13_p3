@@ -224,13 +224,13 @@ class Force{
 		return this._unitList[2];
 	}
 	get infantryCount(){
-		return (this.unitList[0] == null) ? 0 : this._unitList[0].count;
+		return (this._unitList[0] == null) ? 0 : this._unitList[0].count;
 	}
 	get helicopterCount(){
-		return (this.unitList[1] == null) ? 0 : this._unitList[1].count;
+		return (this._unitList[1] == null) ? 0 : this._unitList[1].count;
 	}
 	get armorCount(){
-		return (this.unitList[2] == null) ? 0 : this._unitList[2].count;
+		return (this._unitList[2] == null) ? 0 : this._unitList[2].count;
 	}
 
 	//setters
@@ -259,16 +259,19 @@ class Unit{
 
 		this._side = side;
         
-		if(type == "Inf"){
-			this.dmgMod = 2;
-			this.hpMod = 10;
-		}else if(type == "Hel"){
-			this.dmgMod = 100;
-			this.hpMod = 125;
-		}else{
-			this.dmgMod = 100;
-			this.hpMod = 250;
-		}
+        switch (type) {
+            case troop_type_names[0]:
+                this.dmgMod = 2;
+	    		this.hpMod = 10;
+                break;
+            case troop_type_names[1]: 
+                this.dmgMod = 100;
+                this.hpMod = 125;
+                break;
+            case troop_type_names[2]:
+                this.dmgMod = 100;
+                this.hpMod = 250;
+        }
 
 		this.health = this.hpMod * count;
 		this.type = type;
