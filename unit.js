@@ -78,9 +78,9 @@ class Unit{
 
 }
 
-let test = new Unit("Inf", 1, 100, "A");
-console.log(test.type);
-console.log(test.health);
-console.log(test.hpMod);
-console.log(test.count);
-console.log(test.side);
+// let test = new Unit("Inf", 1, 100, "A");
+// console.log(test.type);
+// console.log(test.health);
+// console.log(test.hpMod);
+// console.log(test.count);
+// console.log(test.side);
