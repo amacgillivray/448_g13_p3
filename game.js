@@ -212,10 +212,6 @@ class Force{
 
 	//methods
 	alterForce(operation, list){
-		let op = 1;
-		if(operation == "remove"){
-			op = -1;
-		}
 		for(i = 0; i < 3; i++){
 			this._unitList[i].alterUnits(operation, list[i]);
 		}
