@@ -108,9 +108,18 @@ const blufor_prefix = "bf";
  */
 class GameMap {
 
-    static setRegionOwner( region_letter, owner )
-    {
 
+    /**
+     * @brief update the ownership of a region
+     * @note could replace parameters with just a force object, since force knows region and owner
+     * @todo if kept this way, replace owner type with enum
+     * @param {string} region_phonetic
+     * @param {string} owner 
+     *                 Should be "opfor", "blufor", or "neutral"
+     */
+    static setRegionOwner( region_phonetic, owner )
+    {
+        document.getElementById(region_phonetic).className = "region " + owner;
     }
 
     static getUnitsInRegion( region_letter )
@@ -128,7 +137,7 @@ class GameMap {
  */
 class Force{
     
-	constrctor(region_group_id){
+	constructor(region_group_id){
 		this.region = region_group_id;
         this.units = GameMap.getUnitsInRegion(region_group_id);
 	}
