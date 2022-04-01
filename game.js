@@ -138,8 +138,9 @@ class GameMap {
      */
     static getUnitsInRegion( region_letter )
     {
+        region_letter = region_letter.toLowerCase();
         let units = [];
-        let team = document.getElementById(region_letter.toUpperCase()).classList.item(1);
+        let team = document.getElementById(region_letter).classList.item(1);
         
         // If the region is empty, return
         if (team == "neutral") return units;
@@ -150,7 +151,7 @@ class GameMap {
         // then get each troop in the region
         troop_type_names.forEach((unitType) => {
             // node id format: [teamprefix]_[regionletter]_[trooptype]
-            let selector = team + "_" + region_letter.toLowerCase() + "_" + unitType;
+            let selector = team + "_" + region_letter + "_" + unitType;
             let node = document.getElementById(selector);
             if (node.classList.contains("t"))
             {
@@ -331,12 +332,23 @@ class Terrain{
 	}
 }
 
-function initialize_troops()
-{
 
-    // region_group_ids.forEach((region) => {
-    //     let n
-    // })   
+class Game{
+
+    constructor()
+    {
+        this.forces = [];
+        this.initialize_forces();
+    }
+
+    initialize_forces()
+    {
+        region_group_ids.forEach((region) => {
+            this.forces.push( new Force(region) );
+        });
+
+        console.log(this.forces);
+    }
 }
 
-console.log(GameMap.getUnitsInRegion("A"));
+let game = new Game;
