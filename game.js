@@ -208,6 +208,15 @@ class Force{
 	}
 
 	//getters
+	get side(){
+		for(i = 0; i < 3; i++){
+			if(this.unitList[i] != null){
+				return this.unitList[i].side;
+			}else if(i == 2){
+				return "neutral";
+			}
+		}
+	}
 	get region(){
 		return this._region;
 	}
@@ -244,7 +253,9 @@ class Force{
 	//methods
 	alterForce(list){
 		for(i = 0; i < 3; i++){
-			this._unitList[i].alterUnits(list[i]);
+			if(list[i] != 0){
+				this._unitList[i].alterUnits(list[i]);
+			}
 		}
 	}
 
@@ -369,6 +380,35 @@ class Game{
             this.forces.push( new Force(region) );
         });
         console.log(this.forces);
+    }
+
+    getRegionForce(region){
+    	this._force.forEach((force)=> {
+    		if(force._region == region)
+    			return force;
+    	})
+    }
+
+    moveTroops(src, dst, count){
+    	//assuming count is valid
+
+    	let A = getRegionForce(src);
+    	let B = getRegionForce(dst);
+    	let removeCount = count.map(function(x) x * -1);
+
+    	//some verification may be needed for both zones
+    	if(A.side == B.side || A.side == "neutral" || B.side == "neutral"){
+    		//reduce count in source and increase count in destination
+	    	A.alterForce(removeCount);
+	    	B.alterForce(count);
+    	}else{
+    		console.log("invalid src or dst");
+    		return 0;
+    	}
+
+    	//check win
+
+    	return 0; 
     }
 }
 
