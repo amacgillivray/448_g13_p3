@@ -177,7 +177,15 @@ class Force{
 	}
 
 	//methods
-	
+	alterForce(operation, list){
+		let op = 1;
+		if(operation == "remove"){
+			op = -1;
+		}
+		for(i = 0; i < 3; i++){
+			this._unitList[i].alterUnits(operation, list[i]);
+		}
+	}
 
 }
 
@@ -261,11 +269,12 @@ class Unit{
 	updateHealth(dmg){
 		this.health = this.health - dmg; 
 	}
-	removeUnits(cnt){
-		this.count = this.count - cnt;
-	}
-	addUnits(cnt){
-		this.count = this.count + cnt;
+	alterUnits(operation, cnt){
+		op = 1;
+		if(operation == "remove"){
+			op = -1;
+		}
+		this.count = this.count + op * cnt;
 	}
 
 }
