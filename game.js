@@ -23,6 +23,21 @@ const troop_type_names = [
 ];
 
 /**
+ * @brief list of troop size names and the respective maximum troop count
+ */
+const troop_sizes = {
+    fandm: 2,
+    fireteam: 5,
+    patrol: 10,
+    section: 20,
+    platoon: 40,
+    company: 250, 
+    battalion: 1000,
+    regiment: 2000,
+    brigade: 5000
+};
+
+/**
  * @brief use these ids to select a regional polygon
  */
 const region_polygon_ids = [
@@ -162,6 +177,12 @@ class GameMap {
         
         return units;
     }
+
+    // may be deleted
+    static updateUnitCount(unitId, newCount)
+    {
+
+    }
 }
 
 /**
@@ -175,6 +196,10 @@ class Force{
 	constructor(region_group_id){
 		this.region = region_group_id;
         this.units = GameMap.getUnitsInRegion(region_group_id);
+        if (this.units.length == 0)
+            this.side = "neutral";
+        else
+            this.side = this.units[0].side;
 	}
 
 	//getters
