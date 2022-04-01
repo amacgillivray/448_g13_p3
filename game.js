@@ -372,7 +372,6 @@ class Game{
         region_group_ids.forEach((region) => {
             this.forces.push( new Force(region) );
         });
-
         console.log(this.forces);
     }
 }
