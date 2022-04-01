@@ -43,6 +43,57 @@ const region_group_ids = [
 ];
 
 /**
+ * @brief using the region group id as an index, tells what regions are 
+ *        connected to each other.
+ */
+const region_connections = {
+    a: [
+        "b",
+        "e",
+        "h"
+    ],
+    b: [
+        "a",
+        "c",
+        "e"
+    ],
+    c: [
+        "b",
+        "d",
+        "e",
+    ],
+    d: [
+        "c",
+        "e",
+        "f",
+    ],
+    e: [
+        "a",
+        "b",
+        "c",
+        "d",
+        "f",
+        "g",
+        "h"
+    ],
+    f: [
+        "d",
+        "e",
+        "g"
+    ],
+    g: [
+        "e",
+        "f",
+        "h"
+    ],
+    h: [
+        "a",
+        "e",
+        "g"
+    ]
+}
+
+/**
  * @brief Shorthand for "opfor" used in SVG node class names
  */
 const opfor_prefix = "of";
@@ -53,12 +104,33 @@ const opfor_prefix = "of";
 const blufor_prefix = "bf";
 
 /**
+ * @brief Class containing static methods to interact with the map
+ */
+class GameMap {
+
+    static setRegionOwner( region_letter, owner )
+    {
+
+    }
+
+    static getUnitsInRegion( region_letter )
+    {
+        
+    }
+
+}
+
+/**
  * @brief Represents the entirety of one team's troops (of multiple types) within a given region.
+ * @note  make sure to prevent any addition of troops from the opposite side to a force when a battle 
+ *        begins. Either make moving to an occupied region immediately begin a battle, or copy the 
+ *        "side" variable from found units on startup and check when adding troops.
  */
 class Force{
-	constrctor(pos, units){
-		this.position = pos;
-		this.unitList = units;	//document.getElementsByClassName(pos);
+    
+	constrctor(region_group_id){
+		this.region = region_group_id;
+        this.units = GameMap.getUnitsInRegion(region_group_id);
 	}
 
 	//getters
@@ -96,7 +168,6 @@ class Force{
 	}
 
 }
-
 
 /**
  * @brief represents an individual troop type (infantry, helicopter, or armor)
@@ -196,4 +267,12 @@ class Terrain{
 		this.type;
 		this.position;		
 	}
+}
+
+function initialize_troops()
+{
+
+    // region_group_ids.forEach((region) => {
+    //     let n
+    // })   
 }
