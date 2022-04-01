@@ -132,6 +132,16 @@ function gameRegionClickCallback( e )
     e.currentTarget.obj._regionClickHandler(e);
 }
 
+function gameSelectedRegionClickCallback( e )
+{
+    e.currentTarget.obj._moveCancelHandler(e);
+}
+
+function gameMoveRegionClickCallback( e )
+{
+    e.currentTarget.obj._moveHandler(e);
+}
+
 /**
  * @brief Class containing static methods to interact with the map
  */
@@ -214,13 +224,14 @@ class Force{
 
 	//getters
 	get side(){
-		for(i = 0; i < 3; i++){
-			if(this.unitList[i] != null){
-				return this.unitList[i].side;
-			}else if(i == 2){
-				return "neutral";
-			}
-		}
+		// for(i = 0; i < 3; i++){
+		// 	if(this.unitList[i] != null){
+		// 		return this.unitList[i].side;
+		// 	}else if(i == 2){
+		// 		return "neutral";
+		// 	}
+		// }
+        return this._side;
 	}
 	get region(){
 		return this._region;
@@ -384,21 +395,19 @@ class Game{
         this._initialize_forces();
         this._initialize_listeners();
         this._state = "initial";
+        this._currentPlayerTurn = "bf";
     }
 
-    _initialize_forces()
+    getRegionForce(region_letter)
     {
-        region_group_ids.forEach((region) => {
-            this.forces.push( new Force(region) );
-        });
-        console.log(this.forces);
-    }
-
-    getRegionForce(region){
-    	this._force.forEach((force)=> {
-    		if(force._region == region)
-    			return force;
-    	})
+        for (let i = 0; i < this.forces.length; i++)
+        {
+            if (this.forces[i].region == region_letter)
+                return this.forces[i];
+            else 
+                continue;
+        }
+        return null;
     }
 
     moveTroops(src, dst, count){
@@ -406,7 +415,7 @@ class Game{
 
     	let A = getRegionForce(src);
     	let B = getRegionForce(dst);
-    	let removeCount = count.map(function(x) x * -1);
+    	let removeCount = count.map(function(x){x * -1});
 
     	//some verification may be needed for both zones
     	if(A.side == B.side || A.side == "neutral" || B.side == "neutral"){
@@ -423,13 +432,21 @@ class Game{
     	return 0;
 	}
 
+    _initialize_forces()
+    {
+        region_group_ids.forEach((region) => {
+            this.forces.push( new Force(region) );
+        });
+        console.log(this.forces);
+    }
+
     _initialize_listeners()
     {
         region_group_ids.forEach((id) => {
             document.getElementById(id).addEventListener(
                 "click",
                 gameRegionClickCallback,
-                false
+                [false, false]
             );
             document.getElementById(id).obj = this;
         });
@@ -442,26 +459,99 @@ class Game{
         if (this._state == "waitForMoveSelect") 
             return;
         this._state = "waitForMoveSelect";
-        
+
         // use the realtarget variable to propagate up from whatever node 
         // was clicked to the node that is the group with the region-letter
         // as the id.
         let realtarget = e.currentTarget;
         while (realtarget.id.length != 1 && realtarget.nodeName != "svg")
             realtarget = realtarget.parentElement;
-        
+
+        // validate that the region is for the current player;
+        // if not, reset state and return
+        let clickedForce = this.getRegionForce(realtarget.id);
+        if (clickedForce.side != this._currentPlayerTurn)
+        {
+            this._state = "initial";
+            return;
+        }
+
         // mark the region group as selected and add an event listener for
         // re-clicking on the region to cancel movement.
         realtarget.classList.add("selected");
-        //realtarget.addEventListener()
+        realtarget.addEventListener(
+            "click",
+            gameSelectedRegionClickCallback,
+            [false, true]
+        );
+        realtarget.obj = this;
 
         // mark valid moves and add event listeners for their selection.
         region_connections[realtarget.id].forEach((validMove) => {
             let node = document.getElementById(validMove);
             node.classList.add("validmove");
-            // add event listeners
-            // make sure cancelable
+            node.addEventListener(
+                "click",
+                gameMoveRegionClickCallback,
+                [false, true]
+            );
+            node.obj = this;
+            node.cf = clickedForce;
         });
+    }
+
+    _moveCancelHandler( e )
+    {
+        if (this._state != "waitForMoveSelect") 
+            return;
+        this._state = "initial";
+
+        e.currentTarget.classList.remove("selected");
+
+        region_connections[e.currentTarget.id].forEach((validMove) => {
+            let node = document.getElementById(validMove);
+            node.classList.remove("validmove");
+            node.removeEventListener(
+                "click",
+                gameMoveRegionClickCallback,
+                [false, true]
+            );
+        });
+
+        // e.currentTarget.addEventListener(
+        //     "click",
+        //     gameRegionClickCallback,
+        //     false
+        // );
+        // e.currentTarget.obj = this;
+    }
+    
+    _moveHandler( e )
+    {
+        if (this._state != "waitForMoveSelect") 
+            return;
+        this._state = "initial";
+
+        e.currentTarget.classList.remove("selected");
+        
+        e.currentTarget.addEventListener(
+            "click",
+            gameRegionClickCallback,
+            false
+        );
+        e.currentTarget.obj = this;
+
+        region_connections[e.currentTarget.id].forEach((validMove) => {
+            let node = document.getElementById(validMove);
+            node.classList.remove("validmove");
+            node.removeEventListener(
+                "click",
+                gameMoveRegionClickCallback,
+                false
+            );
+        });
+
+
     }
 }
 
