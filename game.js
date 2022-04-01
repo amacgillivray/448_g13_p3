@@ -127,6 +127,11 @@ const opfor_prefix = "of";
  */
 const blufor_prefix = "bf";
 
+function gameRegionClickCallback( e )
+{
+    e.currentTarget.obj._regionClickHandler(e);
+}
+
 /**
  * @brief Class containing static methods to interact with the map
  */
@@ -360,18 +365,63 @@ class Terrain{
 
 class Game{
 
+
+
     constructor()
     {
         this.forces = [];
-        this.initialize_forces();
+        this._initialize_forces();
+        this._initialize_listeners();
+        this._state = "initial";
     }
 
-    initialize_forces()
+    _initialize_forces()
     {
         region_group_ids.forEach((region) => {
             this.forces.push( new Force(region) );
         });
         console.log(this.forces);
+    }
+
+    _initialize_listeners()
+    {
+        region_group_ids.forEach((id) => {
+            document.getElementById(id).addEventListener(
+                "click",
+                gameRegionClickCallback,
+                false
+            );
+            document.getElementById(id).obj = this;
+        });
+    }
+
+    _regionClickHandler( e )
+    {
+        // Guard for state: ensure multiple regions cannot be selected
+        // at once. 
+        if (this._state == "waitForMoveSelect") 
+            return;
+        this._state = "waitForMoveSelect";
+        
+        // use the realtarget variable to propagate up from whatever node 
+        // was clicked to the node that is the group with the region-letter
+        // as the id.
+        let realtarget = e.currentTarget;
+        while (realtarget.id.length != 1 && realtarget.nodeName != "svg")
+            realtarget = realtarget.parentElement;
+        
+        // mark the region group as selected and add an event listener for
+        // re-clicking on the region to cancel movement.
+        realtarget.classList.add("selected");
+        //realtarget.addEventListener()
+
+        // mark valid moves and add event listeners for their selection.
+        region_connections[realtarget.id].forEach((validMove) => {
+            let node = document.getElementById(validMove);
+            node.classList.add("validmove");
+            // add event listeners
+            // make sure cancelable
+        });
     }
 }
 
