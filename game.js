@@ -167,6 +167,9 @@ class Force{
 		this._unitList = uts;
 	}
 
+	//methods
+	
+
 }
 
 /**
@@ -248,6 +251,12 @@ class Unit{
 	// }
 	updateHealth(dmg){
 		this.health = this.health - dmg; 
+	}
+	removeUnits(cnt){
+		this.count = this.count - cnt;
+	}
+	addUnits(cnt){
+		this.count = this.count + cnt;
 	}
 
 }
