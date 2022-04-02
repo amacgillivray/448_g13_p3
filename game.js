@@ -195,10 +195,23 @@ class GameMap {
         return units;
     }
 
-    // may be deleted
-    static updateUnitCount(unitId, newCount)
+    static updateUnitDisplay(unit)
     {
+        let node = unit.side + "_" + unit.region + "_" + unit.type;
+        console.log(node);
+        // node = document.getElementById(node);
 
+        console.log("Troop count: " + unit.count);
+
+        if (unit.count <= 0) {
+            console.log("Hiding unit.");
+            document.getElementById(node).setAttribute("class", "t_np");
+        }
+        else if (unit.count > 0){
+            console.log("Revealing unit.");
+            document.getElementById(node).setAttribute("class", "t");
+            
+        }
     }
 }
 
@@ -259,8 +272,8 @@ class Force{
 	}
 
 	//setters
-	set position(p){
-		this._position = p;
+	set region(p){
+		this._region = p;
 	}
 	set unitList(uts){
 		this._unitList = uts;
@@ -268,13 +281,23 @@ class Force{
 
 	//methods
 	alterForce(list){
-		for(i = 0; i < 3; i++){
-			if(list[i] != 0){
+		for(let i = 0; i < 3; i++){
+			if(this._unitList[i] != null){
 				this._unitList[i].alterUnits(list[i]);
-			}
+                GameMap.updateUnitDisplay(this._unitList[i]);
+			} else {
+                // todo check later
+                this._unitList[i] = new Unit(
+                    troop_type_names[i],
+                    this._region,
+                    list[i],
+                    this._side
+                );
+                console.log(this._unitList[i] + ": " + list[i]);
+                GameMap.updateUnitDisplay(this._unitList[i]);
+            }
 		}
 	}
-
 }
 
 /**
@@ -282,10 +305,11 @@ class Force{
  */
 class Unit{
 
-    constructor(type, position, count, side){
+    constructor(type, region, count, side){
 
 		this._side = side;
-        
+        this._id = side + "_" + region + "_" + type;
+
         switch (type) {
             case troop_type_names[0]:
                 this.dmgMod = 2;
@@ -302,7 +326,7 @@ class Unit{
 
 		this.health = this.hpMod * count;
 		this.type = type;
-		this.position = position;
+		this.region = region;
 		// this.movement = 
 		// make a dom to attach to the visual element
 	}
@@ -320,22 +344,22 @@ class Unit{
 	get type(){
 		return this._type;
 	}
-	get position(){
-		return this._position;
+	get region(){
+		return this._region;
 	}
 	get health(){
 		return this._health;
 	}
 	get count(){
-		return Math.ceil((this.health) / (this.hpMod));
+		return (this.health > 0) ? Math.ceil((this.health) / (this.hpMod)) : 0;
 	}
 
 	//setters
 	set health(hp){
 		this._health = hp;
 	}
-	set position(pos){
-		this._position = pos;
+	set region(pos){
+		this._region = pos;
 	}
 	set count(ct){
 		this._count = ct;
@@ -355,16 +379,17 @@ class Unit{
 	
 	//methods
 	//movement calc(){
-		// mov = movementFunction(position.terrain, this.type)
+		// mov = movementFunction(region.terrain, this.type)
 		// this.movement = mov;
 	// }
 	updateHealth(dmg){
 		this.health = this.health - dmg; 
 	}
 	alterUnits(cnt){
-		this.count = this.count + cnt;
+        console.log("Adding " + cnt + " to " + this._id);
+		this._health += (this.hpMod * cnt);
+        document.getElementById(this._id).setAttribute("data-count", this.count);
 	}
-
 }
 
 // let test = new Unit("Inf", 1, 100, "A");
@@ -380,7 +405,7 @@ class Unit{
 class Terrain{
 	constructor(pos){
 		this.type;
-		this.position;		
+		this.region;		
 	}
 }
 
@@ -442,11 +467,12 @@ class Game{
 
     _initialize_listeners()
     {
+        // ADD LISTENER FOR REGION CLICK BY CURRENT PLAYER
         region_group_ids.forEach((id) => {
             document.getElementById(id).addEventListener(
                 "click",
                 gameRegionClickCallback,
-                [false, false]
+                [false, false, ]
             );
             document.getElementById(id).obj = this;
         });
@@ -479,6 +505,7 @@ class Game{
         // mark the region group as selected and add an event listener for
         // re-clicking on the region to cancel movement.
         realtarget.classList.add("selected");
+        // ADD LISTENER FOR CANCEL MOVEMENT
         realtarget.addEventListener(
             "click",
             gameSelectedRegionClickCallback,
@@ -490,12 +517,15 @@ class Game{
         region_connections[realtarget.id].forEach((validMove) => {
             let node = document.getElementById(validMove);
             node.classList.add("validmove");
+
+            // ADD LISTENER FOR MOVING TROOPS
             node.addEventListener(
                 "click",
                 gameMoveRegionClickCallback,
                 [false, true]
             );
             node.obj = this;
+            node.oc = realtarget.id;
             node.cf = clickedForce;
         });
     }
@@ -511,6 +541,8 @@ class Game{
         region_connections[e.currentTarget.id].forEach((validMove) => {
             let node = document.getElementById(validMove);
             node.classList.remove("validmove");
+
+            // REMOVE LISTENER FOR MOVING TROOPS
             node.removeEventListener(
                 "click",
                 gameMoveRegionClickCallback,
@@ -518,12 +550,12 @@ class Game{
             );
         });
 
-        // e.currentTarget.addEventListener(
-        //     "click",
-        //     gameRegionClickCallback,
-        //     false
-        // );
-        // e.currentTarget.obj = this;
+        e.currentTarget.addEventListener(
+            "click",
+            gameRegionClickCallback,
+            [false, false]
+        );
+        e.currentTarget.obj = this;
     }
     
     _moveHandler( e )
@@ -541,7 +573,11 @@ class Game{
         );
         e.currentTarget.obj = this;
 
-        region_connections[e.currentTarget.id].forEach((validMove) => {
+        // Remove "selected" class from origin
+        document.getElementById(e.currentTarget.oc).classList.remove("selected");
+
+        // Remove "validmove" class from move options
+        region_connections[e.currentTarget.oc].forEach((validMove) => {
             let node = document.getElementById(validMove);
             node.classList.remove("validmove");
             node.removeEventListener(
@@ -551,7 +587,27 @@ class Game{
             );
         });
 
+        //console.log(e.currentTarget.id);
+        console.log("dst: " + e.currentTarget.id);
+        let dstForce = this.getRegionForce(e.currentTarget.id);
+        console.log("src: " + e.currentTarget.oc);
+        let srcForce = this.getRegionForce(e.currentTarget.oc);
 
+        if (dstForce.side == "neutral")
+            dstForce._side = srcForce.side;
+
+        dstForce.alterForce([
+            srcForce.infantryCount, 
+            srcForce.helicopterCount,
+            srcForce.armorCount
+            ]
+        );
+
+        srcForce.alterForce(
+            (-1)*srcForce.infantryCount, 
+            (-1)*srcForce.helicopterCount,
+            (-1)*srcForce.armorCount
+        );
     }
 }
 
