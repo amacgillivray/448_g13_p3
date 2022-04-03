@@ -37,6 +37,11 @@ const troop_sizes = {
     brigade: 5000
 };
 
+const team_key = {
+    bf: "NATO",
+    of: "PACT"
+};
+
 /**
  * @brief use these ids to select a regional polygon
  */
@@ -626,7 +631,7 @@ class Battle {
 
         //log.innerHTML += "<p>" + this._off.side.toUpperCase() + " attacked " + this._def.region_phonetic + " from " + this._off.region_phonetic + "</p>\n";
 
-        gameLog( this._off.side.toUpperCase() + " attacked " + this._def.region_phonetic + " from " + this._off.region_phonetic ); 
+        gameLog( this._off.side.toUpperCase() + " attacks " + this._def.region_phonetic + " from " + this._off.region_phonetic ); 
         // document.getElementById("battleind").innerHTML = " - IN BATTLE AT " + defending_force.region_phonetic.toUpperCase();
     }
 
@@ -657,10 +662,10 @@ class Battle {
         if (this._off.totalCount == 0)
         {
             // document.getElementById("battleind").innerHTML = "";
-            gameLog( this._def.side.toUpperCase() + " maintains control of region " + this._def.region_phonetic + "." ); 
+            gameLog( team_key[this._def.side] + " maintains control of " + this._def.region_phonetic + "." ); 
             return;
         } else {
-            gameLog( this._off.side.toUpperCase() + " has taken control of region " + this._def.region_phonetic + "." );
+            gameLog( team_key[this._off.side] + " takes control of " + this._def.region_phonetic + "." );
             this._def._side = this._off.side;
             this._def.alterForce(
                 [
@@ -837,11 +842,11 @@ class Game{
         if(this._currentPlayerTurn == "bf"){
     		this._currentPlayerTurn = "of";
             document.getElementById("turn-indicator").setAttribute("class", "opfor");
-            document.getElementById("team").innerHTML = "OPFOR";
+            document.getElementById("team").innerHTML = "OPFOR (PACT)";
     	}else if(this._currentPlayerTurn == "of"){
     		this._currentPlayerTurn = "bf";
             document.getElementById("turn-indicator").setAttribute("class", "blufor");
-            document.getElementById("team").innerHTML = "BLUFOR";
+            document.getElementById("team").innerHTML = "BLUFOR (NATO)";
     	}
 
         this.forces.forEach((force) => {
@@ -986,7 +991,7 @@ class Game{
         }
 
         //log.innerHTML += "<p>" + this._currentPlayerTurn.toUpperCase() + " moved from " + srcForce.region_phonetic + " to " + dstForce.region_phonetic + "</p>\n";
-        gameLog(  this._currentPlayerTurn.toUpperCase() + " moved from " + srcForce.region_phonetic + " to " + dstForce.region_phonetic );
+        gameLog( team_key[this._currentPlayerTurn] + " moves from " + srcForce.region_phonetic + " to " + dstForce.region_phonetic );
 
         dstForce.alterForce([
             srcForce.infantryCount, 
