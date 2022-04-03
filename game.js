@@ -239,6 +239,7 @@ class GameMap {
         // node = document.getElementById(node);
 
         console.log("Troop count: " + unit.count);
+        document.getElementById(node).setAttribute("data-count", unit.count)
 
         // Hide or unhide the unit based on its count.
         if (unit.count <= 0) {
@@ -325,6 +326,10 @@ class Force{
 		return (this._unitList[2] == null) ? 0 : this._unitList[2].count;
 	}
 
+    get totalCount() {
+        return this.infantryCount + this.helicopterCount + this.armorCount;
+    }
+
 	//setters
 	set region(p){
 		this._region = p;
@@ -363,6 +368,59 @@ class Force{
         this._determineSide();
 	}
 
+    distributeDamage( damage )
+    {
+        let types_present = 0;
+        // let fractional_damage = 0;
+        let newIc = 0;
+        let newHc = 0;
+        let newAc = 0;
+        let af = [ 0, 0, 0 ];
+
+        if (this.infantryCount > 0)
+            types_present++;
+        if (this.armorCount > 0)
+            types_present++;
+        if (this.helicopterCount > 0)
+            types_present++;
+        
+        let damageMatrix = [
+            this.infantryCount / this.totalCount,
+            this.helicopterCount / this.totalCount,
+            this.armorCount / this.totalCount
+        ];
+
+        if (this.infantryCount > 0)
+        {
+            newIc = this.infantryCount - ((damageMatrix[0] * damage) / this.infantry.hpMod);
+            if (newIc < 0) {
+                newIc = 0;
+            }
+            af[0] = (newIc - this.infantryCount);
+        }
+
+        if (this.helicopterCount > 0)
+        {
+            newHc = this.helicopterCount - ((damageMatrix[1] * damage) / this.helicopter.hpMod);
+            if (newHc < 0) {
+                newHc = 0;
+            }
+            af[1] = (newHc - this.helicopterCount);
+        }
+
+        if (this.armorCount > 0)
+        {
+            newAc = this.armorCount - ((damageMatrix[2] * damage) / this.armor.hpMod);
+            if (newAc < 0) {
+                newAc = 0;
+            }
+            af[2] = (newAc - this.armorCount);
+        }
+
+        this.alterForce(af);
+
+    }
+
     _determineSide()
     {
         this._side = "neutral";
@@ -370,7 +428,7 @@ class Force{
         {
             if (this._unitList[i] != null)
             {
-                this._side = this._unitList[0].side;
+                this._side = this._unitList[i].side;
                 break;
             }
         }
@@ -507,7 +565,8 @@ class Battle {
      */
     constructor( defending_force, attacking_force )
     {
-
+        this._off = attacking_force;
+        this._def = defending_force;
     }
 
     // called by the move handler fn when opposing armies try to 
@@ -520,6 +579,32 @@ class Battle {
         // send the defeated army to a nearby allied/neutral cell, or 
         // delete the entire defeated army if no such cell is available
         alert("Starting battle!");
+
+        while( this._off.totalCount > 0 && this._def.totalCount > 0 )
+        {
+            this._tick();
+        }
+
+        if (this._off.totalCount == 0)
+        {
+            return;
+        } else {
+            this._def._side = this._off.side;
+            this._def.alterForce(
+                [
+                    this._off.infantryCount,
+                    this._off.helicopterCount,
+                    this._off.armorCount
+                ]
+            );
+            this._off.alterForce(
+                [
+                    (-1)*this._off.infantryCount,
+                    (-1)*this._off.helicopterCount,
+                    (-1)*this._off.armorCount
+                ]
+            )
+        }
     }
 
     /**
@@ -529,6 +614,47 @@ class Battle {
      */
     _tick()
     {
+        // Damage by attackers
+        let dmgo = 0;
+
+        // Damage by defenders
+        let dmgd = 0;
+
+        // Calculate dmgo
+        if (this._off.infantry != null)
+            dmgo += this._off.infantryCount * this._off.infantry.dmgMod * Math.random();
+        if (this._off.helicopter != null)
+            dmgo += this._off.helicopterCount * this._off.helicopter.dmgMod * Math.random();
+        if (this._off.armor != null)
+            dmgo += this._off.armorCount * this._off.armor.dmgMod * Math.random();
+
+        // Calculate dmgd
+        if (this._def.infantry != null)
+            dmgd += this._def.infantryCount * this._def.infantry.dmgMod * Math.random();
+        if (this._def.helicopter != null)
+            dmgd += this._def.helicopterCount * this._def.helicopter.dmgMod * Math.random();
+        if (this._def.armor != null)
+            dmgd += this._def.armorCount * this._def.armor.dmgMod * Math.random();
+
+        // Deal damage to offense
+        this._off.distributeDamage(dmgd);
+
+        // Deal damage to defense
+        this._def.distributeDamage(dmgo);
+
+        // Wait
+        
+
+        // [this._off, this._def].forEach((force) => {
+        //     let dmgMap = [0,0,0];
+        //     if (force.infantry != null)
+        //         dmgMap[0] = 1;
+        //     if (force.helicopter != null)
+        //         dmgMap[1] = 1;
+        //     if (force.armor != null)
+        //         dmgMap[2] = 1;
+            
+        // });
 
     }
 
