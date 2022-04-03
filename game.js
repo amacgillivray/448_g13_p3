@@ -450,6 +450,18 @@ class Battle {
 
     }
 
+    // called by the move handler fn when opposing armies try to 
+    // occupy the same cell. 
+    start()
+    {
+        // while neither force is dead, call tick
+        // then calculate % casualties returned to both players
+
+        // send the defeated army to a nearby allied/neutral cell, or 
+        // delete the entire defeated army if no such cell is available
+        alert("Starting battle!");
+    }
+
     /**
      * @brief called repeatedly until the battle ends.
      *        For now, should deal damage entirely at random
@@ -677,8 +689,16 @@ class Game{
         console.log("src: " + e.currentTarget.oc);
         let srcForce = this.getRegionForce(e.currentTarget.oc);
 
+        // Allow transfer of troops if the target region is 
+        // neutral or already owned by the current player.
+        // Otherwise, start a battle.
         if (dstForce.side == "neutral")
             dstForce._side = srcForce.side;
+        else if (dstForce.side != this._currentPlayerTurn)
+        {
+            let battle = new Battle(dstForce, srcForce);
+            battle.start();
+        }
 
         dstForce.alterForce([
             srcForce.infantryCount, 
