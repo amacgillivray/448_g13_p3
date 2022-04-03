@@ -51,6 +51,17 @@ const region_polygon_ids = [
     "hotel"
 ];
 
+const region_phonetic_key = {
+    a: "alpha",
+    b: "bravo",
+    c: "charlie",
+    d: "delta",
+    e: "echo",
+    f: "foxtrot",
+    g: "golf",
+    h: "hotel"
+};
+
 /**
  * @brief use these ids to select the entire region group node (including its name). 
  *        These are also used in troop node names 
@@ -126,6 +137,8 @@ const opfor_prefix = "of";
  * @brief Shorthand for "blufor" used in SVG node class names
  */
 const blufor_prefix = "bf";
+
+const wait = (ms) => new Promise ( (resolve) => setTimeout( resolve , ms ) )
 
 function getBestTroopCountSymbol( size )
 {
@@ -235,10 +248,10 @@ class GameMap {
     static updateUnitDisplay(unit)
     {
         let node = unit.side + "_" + unit.region + "_" + unit.type;
-        console.log(node);
+        //console.log(node);
         // node = document.getElementById(node);
 
-        console.log("Troop count: " + unit.count);
+        //console.log("Troop count: " + unit.count);
         document.getElementById(node).setAttribute("data-count", unit.count)
 
         // Hide or unhide the unit based on its count.
@@ -304,6 +317,9 @@ class Force{
 	get region(){
 		return this._region;
 	}
+    get region_phonetic(){
+        return region_phonetic_key[this._region];
+    }
 	get unitList(){
 		return this._unitList;
 	}
@@ -496,7 +512,10 @@ class Unit{
 	}
 	get region(){
 		return this._region;
-	}
+    }
+    get region_phonetic(){
+        return region_phonetic_key[this._region];
+    }
 	get health(){
 		return this._health;
 	}
@@ -575,6 +594,10 @@ class Battle {
     {
         this._off = attacking_force;
         this._def = defending_force;
+
+        this._ticks = 0;
+
+        // document.getElementById("battleind").innerHTML = " - IN BATTLE AT " + defending_force.region_phonetic.toUpperCase();
     }
 
     // called by the move handler fn when opposing armies try to 
@@ -586,15 +609,24 @@ class Battle {
 
         // send the defeated army to a nearby allied/neutral cell, or 
         // delete the entire defeated army if no such cell is available
-        alert("Starting battle!");
+        //alert("Starting battle!");
 
         while( this._off.totalCount > 0 && this._def.totalCount > 0 )
         {
+            //setTimeout(()=>this._tick(), 1000);
             this._tick();
+
+            // console.log("Tick #" + this._ticks);
+            // // this._tick();
+            // setTimeout(()=>this._tick(), 1000*this._ticks);
+            // this._ticks++;
+
+
         }
 
         if (this._off.totalCount == 0)
         {
+            // document.getElementById("battleind").innerHTML = "";
             return;
         } else {
             this._def._side = this._off.side;
@@ -612,6 +644,7 @@ class Battle {
                     (-1)*this._off.armorCount
                 ]
             )
+            // document.getElementById("battleind").innerHTML = "";
         }
     }
 
@@ -622,6 +655,12 @@ class Battle {
      */
     _tick()
     {
+        const s = Date.now();
+        let now = null;
+
+        console.log("Tick #" + this._ticks);
+        this._ticks++;
+        
         // Damage by attackers
         let dmgo = 0;
 
@@ -644,14 +683,26 @@ class Battle {
         if (this._def.armor != null)
             dmgd += this._def.armorCount * this._def.armor.dmgMod * Math.random();
 
+        // await wait(1000);
+
+        // if (this._off.totalCount == 0 || this._def.totalCount == 0)
+        //     return; 
+
+        do {
+            now = Date.now();
+        } while (now-s < 200);
+
         // Deal damage to offense
         this._off.distributeDamage(dmgd);
 
         // Deal damage to defense
         this._def.distributeDamage(dmgo);
 
+        return;
+
         // Wait
-        
+        //wait(1000).then(() => {return});
+        //wait(1000);
 
         // [this._off, this._def].forEach((force) => {
         //     let dmgMap = [0,0,0];
@@ -753,8 +804,12 @@ class Game{
 
         if(this._currentPlayerTurn == "bf"){
     		this._currentPlayerTurn = "of";
+            document.getElementById("turn-indicator").setAttribute("class", "opfor");
+            document.getElementById("team").innerHTML = "OPFOR";
     	}else if(this._currentPlayerTurn == "of"){
     		this._currentPlayerTurn = "bf";
+            document.getElementById("turn-indicator").setAttribute("class", "blufor");
+            document.getElementById("team").innerHTML = "BLUFOR";
     	}
 
         this.forces.forEach((force) => {
@@ -890,8 +945,11 @@ class Game{
             dstForce._side = srcForce.side;
         else if (dstForce.side != this._currentPlayerTurn)
         {
+            this._state = "battle";
             let battle = new Battle(dstForce, srcForce);
             battle.start();
+            this._state = "initial";
+            this._changeTurn();
             return;
         }
 

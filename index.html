@@ -15,7 +15,7 @@
                 display: block;
                 width: auto;
                 max-width: 98%;
-                height: 90vh;
+                height: 89vh;
                 margin: auto;
                 user-select: none;
                 -moz-user-select: none;
@@ -34,6 +34,19 @@
                 margin: 0 auto;
                 padding: 15px;
                 font-size: 1.32em;
+                padding-bottom: 3px;
+            }
+
+            #turn-indicator {
+              text-align: center;
+              margin:0;
+            }
+            
+            #turn-indicator.blufor {
+              background-color: #45f;
+            }
+            #turn-indicator.opfor {
+              background-color: #f54;
             }
 
                         /* troopcount_hidden */
@@ -152,6 +165,7 @@
     <body>
         <div class="top">
         <h1 id="title">NORTH ATLANTIC</h1>
+        <p id="turn-indicator" class="blufor"><span id="team">BLUFOR</span> TURN<span id="battleind"></span></p>
         </div>
         <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1646 1080">
