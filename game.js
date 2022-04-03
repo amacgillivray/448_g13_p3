@@ -563,12 +563,6 @@ class Game{
     _moveHandler( e )
     {
 
-    	if(this._currentPlayerTurn == "bf"){
-    		this._currentPlayerTurn = "of";
-    	}else if(this._currentPlayerTurn == "of"){
-    		this._currentPlayerTurn = "bf";
-    	}
-
         if (this._state != "waitForMoveSelect") 
             return;
         this._state = "initial";
@@ -617,6 +611,13 @@ class Game{
             (-1)*srcForce.helicopterCount,
             (-1)*srcForce.armorCount
         );
+    
+        if(this._currentPlayerTurn == "bf"){
+    		this._currentPlayerTurn = "of";
+    	}else if(this._currentPlayerTurn == "of"){
+    		this._currentPlayerTurn = "bf";
+    	}
+
     }
 }
 
