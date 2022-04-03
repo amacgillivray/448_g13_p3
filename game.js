@@ -558,8 +558,17 @@ class Game{
         e.currentTarget.obj = this;
     }
     
+    //set this._currentPlayerTurn to "of" then back to "bf" in an alternating manner
+
     _moveHandler( e )
     {
+
+    	if(this._currentPlayerTurn == "bf"){
+    		this._currentPlayerTurn = "of";
+    	}else if(this._currentPlayerTurn == "of"){
+    		this._currentPlayerTurn = "bf";
+    	}
+
         if (this._state != "waitForMoveSelect") 
             return;
         this._state = "initial";
