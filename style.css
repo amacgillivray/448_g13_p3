@@ -1,0 +1,182 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #7e7e7e;
+}
+
+svg {
+  display: block;
+  width: auto;
+  max-width: 98%;
+  height: 89vh;
+  margin: auto;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.top {
+  background-color: #3e3e3e;
+  color: #eee;
+  /* margin-bottom: 15px; */
+}
+
+#title {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  padding: 15px;
+  font-size: 1.32em;
+  padding-bottom: 3px;
+}
+
+#turn-indicator {
+  text-align: center;
+  margin: 0;
+}
+
+#turn-indicator.blufor {
+  background-color: #45f;
+}
+
+#turn-indicator.opfor {
+  background-color: #f54;
+}
+
+/* troopcount_hidden */
+.tc_h {
+  display: none
+}
+
+/* troop: not present */
+.t_np {
+  display: none;
+}
+
+/*.unit.blufor rect,*/
+.blufor_shape {
+  fill: #85d4ef !important;
+  opacity: 0.6;
+}
+
+/*.unit.opfor rect,*/
+.opfor_shape {
+  fill: #ef2444 !important;
+  opacity: 0.6;
+}
+
+.unit:hover {
+  cursor: pointer;
+}
+
+.unit:hover .blufor_shape,
+.unit:hover .opfor_shape {
+  opacity: 0.8;
+}
+
+.unit.selected .blufor_shape,
+.unit.selected .opfor_shape {
+  opacity: 0.9;
+  stroke: #00f;
+}
+
+.cls-7:hover {
+  fill: #d9dbee;
+  opacity: .45;
+  stroke: #444ea1;
+  stroke-width: 6px;
+}
+
+.regionname {
+  opacity: 0;
+}
+
+.region:hover .regionname {
+  opacity: .31;
+}
+
+.region.blufor polygon,
+.region.bf polygon {
+  fill: #91C0E855 !important;
+  stroke: #456EA1 !important;
+}
+
+.region.opfor polygon,
+.region.of polygon {
+  fill: #E3919255 !important;
+  stroke: #A14F48 !important;
+}
+
+.region.neutral polygon {
+  fill: #c3c3c355 !important;
+  stroke: #8885 !important;
+}
+
+.region.selected polygon {
+  cursor: pointer;
+  opacity: .85
+}
+
+.region.opfor.selected polygon {
+  fill: #f39192 !important;
+  stroke: #A14F48 !important;
+}
+
+.region.blufor.selected polygon {
+  fill: #91C0E8 !important;
+  stroke: #456EA1 !important;
+}
+
+.region.selected .regionname,
+.region.validmove .regionname {
+  opacity: .85;
+  cursor: pointer;
+}
+
+.region.selected .regionname {
+  opacity: 0.35
+}
+
+.region.validmove polygon {
+  fill: #42efab55 !important;
+  stroke: #24cf8b !important;
+  cursor: pointer;
+}
+
+.region.validmove polygon:hover {
+  fill: #52ffbb !important;
+  stroke: #24cf8b !important;
+  cursor: pointer;
+}
+
+.region.cpt polygon {
+  opacity: 0.75;
+}
+
+#container {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+#log {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    height: 400px;
+    overflow-y: scroll;
+    margin: 15px;
+    padding: 5px;
+    background-color: #3e3e3e;
+    font-family: 'courier new', monospace;
+    font-size: 9px;
+    color: #eee;
+}
+
+.date {
+    color: #999;
+    padding-right: 8px;
+}

@@ -140,6 +140,34 @@ const blufor_prefix = "bf";
 
 const wait = (ms) => new Promise ( (resolve) => setTimeout( resolve , ms ) )
 
+
+function gameLog( message, classlist = "" )
+{
+    let log = document.getElementById("log");
+    let date = new Date;
+    let dateStr = "";
+    let container = document.createElement("p");
+    if ( classlist != "" ) 
+        container.setAttribute("class", classlist);
+    container.setAttribute("id", "l" + log_entries);
+
+    date.setTime(Date.now());
+    dateStr = (date.getHours().toString().length < 2) ? "0" + date.getHours().toString() : date.getHours().toString();
+    dateStr += ":"
+    dateStr += (date.getMinutes().toString().length < 2) ? "0" + date.getMinutes().toString() : date.getMinutes().toString();
+    dateStr += ":"
+    dateStr += (date.getSeconds().toString().length < 2) ? "0" + date.getSeconds().toString() : date.getSeconds().toString();
+
+    container.innerHTML = "<span class=\"date\">" + dateStr + "</span>" + message;
+
+    if (log_entries-1 < 0)
+        log.appendChild(container);
+    else 
+        log.insertBefore(container, document.getElementById("l" + (log_entries-1)));
+
+    log_entries++;
+}
+
 function getBestTroopCountSymbol( size )
 {
     let icon_sizes = [
@@ -594,9 +622,11 @@ class Battle {
     {
         this._off = attacking_force;
         this._def = defending_force;
-
         this._ticks = 0;
 
+        //log.innerHTML += "<p>" + this._off.side.toUpperCase() + " attacked " + this._def.region_phonetic + " from " + this._off.region_phonetic + "</p>\n";
+
+        gameLog( this._off.side.toUpperCase() + " attacked " + this._def.region_phonetic + " from " + this._off.region_phonetic ); 
         // document.getElementById("battleind").innerHTML = " - IN BATTLE AT " + defending_force.region_phonetic.toUpperCase();
     }
 
@@ -627,8 +657,10 @@ class Battle {
         if (this._off.totalCount == 0)
         {
             // document.getElementById("battleind").innerHTML = "";
+            gameLog( this._off.side.toUpperCase() + " lost!" ); 
             return;
         } else {
+            gameLog( this._off.side.toUpperCase() + " won!" );
             this._def._side = this._off.side;
             this._def.alterForce(
                 [
@@ -953,6 +985,9 @@ class Game{
             return;
         }
 
+        //log.innerHTML += "<p>" + this._currentPlayerTurn.toUpperCase() + " moved from " + srcForce.region_phonetic + " to " + dstForce.region_phonetic + "</p>\n";
+        gameLog(  this._currentPlayerTurn.toUpperCase() + " moved from " + srcForce.region_phonetic + " to " + dstForce.region_phonetic );
+
         dstForce.alterForce([
             srcForce.infantryCount, 
             srcForce.helicopterCount,
@@ -973,3 +1008,4 @@ class Game{
 }
 
 let game = new Game;
+let log_entries = 0;
