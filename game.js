@@ -226,13 +226,7 @@ class Force{
 	constructor(region_group_id){
 		this._region = region_group_id;
         this._unitList = GameMap.getUnitsInRegion(region_group_id);
-        this._side = "neutral";
-        troop_type_names.forEach((name, i) => {
-            if (this._unitList[i] != null)
-            {
-                this._side = this._unitList[0].side;
-            }
-        });
+        this._determineSide();
 	}
 
 	//getters
@@ -277,6 +271,7 @@ class Force{
 	}
 	set unitList(uts){
 		this._unitList = uts;
+        this._determineSide();
 	}
 
 	//methods
@@ -297,7 +292,36 @@ class Force{
                 GameMap.updateUnitDisplay(this._unitList[i]);
             }
 		}
+
+        // Remove empty units
+        for(let i = 0; i < 3; i++){
+			if(this._unitList[i].count == 0){
+                this._unitList[i] = null;
+            }
+        }
+
+        this._determineSide();
 	}
+
+    _determineSide()
+    {
+        this._side = "neutral";
+        for (let i = 0; i < troop_type_names.length; i++)
+        {
+            if (this._unitList[i] != null)
+            {
+                this._side = this._unitList[0].side;
+                break;
+            }
+        }
+        // troop_type_names.forEach((name, i) => {
+        //});
+
+        if (!document.getElementById(this._region).classList.contains(this._side))
+        {
+            document.getElementById(this._region).setAttribute("class", "region " + this._side);
+        }
+    }
 }
 
 /**
@@ -407,6 +431,31 @@ class Terrain{
 		this.type;
 		this.region;		
 	}
+}
+
+class Battle {
+
+    /**
+     * @brief Construct a battle using a defender and attacker.
+     *        Battle takes place in the defending force's cell.
+     * @param {*} defending_force 
+     * @param {*} attacking_force 
+     */
+    constructor( defending_force, attacking_force )
+    {
+
+    }
+
+    /**
+     * @brief called repeatedly until the battle ends.
+     *        For now, should deal damage entirely at random
+     *        Will later be updated to match specifications.
+     */
+    _tick()
+    {
+
+    }
+
 }
 
 
