@@ -657,10 +657,10 @@ class Battle {
         if (this._off.totalCount == 0)
         {
             // document.getElementById("battleind").innerHTML = "";
-            gameLog( this._off.side.toUpperCase() + " lost!" ); 
+            gameLog( this._def.side.toUpperCase() + " maintains control of region " + this._def.region_phonetic + "." ); 
             return;
         } else {
-            gameLog( this._off.side.toUpperCase() + " won!" );
+            gameLog( this._off.side.toUpperCase() + " has taken control of region " + this._def.region_phonetic + "." );
             this._def._side = this._off.side;
             this._def.alterForce(
                 [
