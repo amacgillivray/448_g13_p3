@@ -377,6 +377,10 @@ class Unit{
 	get count(){
 		return (this.health > 0) ? Math.ceil((this.health) / (this.hpMod)) : 0;
 	}
+    get id()
+    {
+        return this._id;
+    }
 
 	//setters
 	set health(hp){
@@ -470,6 +474,13 @@ class Game{
         this._initialize_listeners();
         this._state = "initial";
         this._currentPlayerTurn = "bf";
+
+        this.forces.forEach((force) => {
+            if (force.side == this._currentPlayerTurn)
+                {
+                    document.getElementById(force.region).classList.toggle("cpt", true);
+                }
+        });
     }
 
     getRegionForce(region_letter)
@@ -524,6 +535,27 @@ class Game{
                 [false, false, ]
             );
             document.getElementById(id).obj = this;
+        });
+    }
+
+    _changeTurn()
+    {
+        this.forces.forEach((force) => {
+            if (force.side == this._currentPlayerTurn)
+                document.getElementById(force.region).classList.toggle("cpt", false);
+        });
+
+        if(this._currentPlayerTurn == "bf"){
+    		this._currentPlayerTurn = "of";
+    	}else if(this._currentPlayerTurn == "of"){
+    		this._currentPlayerTurn = "bf";
+    	}
+
+        this.forces.forEach((force) => {
+            if (force.side == this._currentPlayerTurn)
+                {
+                    document.getElementById(force.region).classList.toggle("cpt", true);
+                }
         });
     }
 
@@ -660,12 +692,9 @@ class Game{
             (-1)*srcForce.helicopterCount,
             (-1)*srcForce.armorCount
         );
-    
-        if(this._currentPlayerTurn == "bf"){
-    		this._currentPlayerTurn = "of";
-    	}else if(this._currentPlayerTurn == "of"){
-    		this._currentPlayerTurn = "bf";
-    	}
+
+
+        this._changeTurn();
 
     }
 }
