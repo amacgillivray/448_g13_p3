@@ -127,6 +127,43 @@ const opfor_prefix = "of";
  */
 const blufor_prefix = "bf";
 
+function getBestTroopCountSymbol( size )
+{
+    let icon_sizes = [
+        2,
+        5,
+        10,
+        20,
+        40,
+        250,
+        1000,
+        2000,
+        5000
+    ];
+
+    let icon_names = [
+        "fandm",
+        "fireteam",
+        "patrol",
+        "section",
+        "platoon",
+        "company",
+        "battalion",
+        "regiment",
+        "brigade"
+    ];
+
+    for (let i = 0; i < icon_sizes.length; i++)
+    {
+        if (size <= icon_sizes[i]){
+            return icon_names[i];
+        }
+    }
+
+    // if no match is found, return the biggest supported troop symbol.
+    return "brigade";
+}
+
 function gameRegionClickCallback( e )
 {
     e.currentTarget.obj._regionClickHandler(e);
@@ -203,14 +240,37 @@ class GameMap {
 
         console.log("Troop count: " + unit.count);
 
+        // Hide or unhide the unit based on its count.
         if (unit.count <= 0) {
-            console.log("Hiding unit.");
+            // console.log("Hiding unit.");
             document.getElementById(node).setAttribute("class", "t_np");
+
+            // make the troop count hidden as well
+            let sz = document.getElementById(node).querySelector(".tc");
+            if (sz != null){
+                sz.classList.remove("tc");
+                sz.classList.add("tc_h");
+            }
         }
         else if (unit.count > 0){
-            console.log("Revealing unit.");
+            // console.log("Revealing unit.");
             document.getElementById(node).setAttribute("class", "t");
+
+            // console.log(".tc_h." + getBestTroopCountSymbol(unit.count));
+
+            // If the troop already existed, remove its old count indicator first
+            let sz0 = document.getElementById(node).querySelector(".tc");
+            if (sz0 != null) { 
+                sz0.classList.remove("tc");
+                sz0.classList.add("tc_h");
+            }
+
+            // Make the appropriate troop count icon visible
+            let sz = document.getElementById(node).querySelector("." + getBestTroopCountSymbol(unit.count));
             
+            sz.classList.remove("tc_h");
+            sz.classList.add("tc");
+            //document.getElementById(node).querySelector("." + getBestTroopCountSymbol(unit.count)).setAttribute("class", "tc");
         }
     }
 }
@@ -691,13 +751,14 @@ class Game{
 
         // Allow transfer of troops if the target region is 
         // neutral or already owned by the current player.
-        // Otherwise, start a battle.
+        // Otherwise, start a battle and return
         if (dstForce.side == "neutral")
             dstForce._side = srcForce.side;
         else if (dstForce.side != this._currentPlayerTurn)
         {
             let battle = new Battle(dstForce, srcForce);
             battle.start();
+            return;
         }
 
         dstForce.alterForce([
