@@ -368,6 +368,8 @@ class Force{
         this._determineSide();
 	}
 
+    // Todo - make "damage" an array to tell what fraction is from inf, hel, armor,
+    // and give the respective buffs / debuffs vs other units. 
     distributeDamage( damage )
     {
         let types_present = 0;
@@ -377,6 +379,11 @@ class Force{
         let newAc = 0;
         let af = [ 0, 0, 0 ];
 
+        // random number between 0 and 1 to determine how to distribute damage between infantry
+        // and vehicles. Infantry damage is multiplied by balanceFactor, while vehicle damage 
+        // is divided by it.
+        let balanceFactor = Math.random();
+
         if (this.infantryCount > 0)
             types_present++;
         if (this.armorCount > 0)
@@ -384,10 +391,11 @@ class Force{
         if (this.helicopterCount > 0)
             types_present++;
         
+
         let damageMatrix = [
-            this.infantryCount / this.totalCount,
-            this.helicopterCount / this.totalCount,
-            this.armorCount / this.totalCount
+            balanceFactor * (this.infantryCount / this.totalCount),
+            (1/balanceFactor) * (this.helicopterCount / this.totalCount),
+            (1/balanceFactor) * (this.armorCount / this.totalCount)
         ];
 
         if (this.infantryCount > 0)
