@@ -333,6 +333,7 @@ class Force{
 	constructor(region_group_id){
 		this._region = region_group_id;
         this._unitList = GameMap.getUnitsInRegion(region_group_id);
+        this._side = "neutral";
         this._determineSide();
 	}
 
@@ -380,13 +381,19 @@ class Force{
     }
 
 	//setters
-	set region(p){
+	
+    set region(p){
 		this._region = p;
 	}
 	set unitList(uts){
 		this._unitList = uts;
         this._determineSide();
 	}
+    // set side(newSide)
+    // {
+    //     this._side = newSide;
+    //     document.getElementById(this._region).setAttribute("class", "region " + this._side);
+    // }
 
 	//methods
 	alterForce(list){
@@ -480,6 +487,8 @@ class Force{
 
     _determineSide()
     {
+        let prev_side = this._side; 
+
         this._side = "neutral";
         for (let i = 0; i < troop_type_names.length; i++)
         {
@@ -495,6 +504,13 @@ class Force{
         if (!document.getElementById(this._region).classList.contains(this._side))
         {
             document.getElementById(this._region).setAttribute("class", "region " + this._side);
+        }
+
+        if (prev_side != "neutral")
+            document.getElementById("s-" + prev_side + "-" + this._region).classList.toggle("sh", true);
+        if (this._side != "neutral") {
+            console.log("s-" + this._side + "-" + this._region);
+           document.getElementById("s-" + this._side + "-" + this._region).classList.toggle("sh", false);
         }
     }
 }
