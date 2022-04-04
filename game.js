@@ -313,7 +313,8 @@ class GameMap {
             // Make the appropriate troop count icon visible
             let sz = document.getElementById(node).querySelector("." + getBestTroopCountSymbol(unit.count));
             if (sz == null ){
-                alert("Unable to find size symbol for " + unit.side + " " + unit.type + " with count " + unit.count);
+                // todo - test in project 4
+                // alert("Unable to find size symbol for " + unit.side + " " + unit.type + " with count " + unit.count);
                 return;
             }
             sz.classList.remove("tc_h");
