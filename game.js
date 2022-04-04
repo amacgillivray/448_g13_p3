@@ -631,7 +631,7 @@ class Battle {
 
         //log.innerHTML += "<p>" + this._off.side.toUpperCase() + " attacked " + this._def.region_phonetic + " from " + this._off.region_phonetic + "</p>\n";
 
-        gameLog( this._off.side.toUpperCase() + " attacks " + this._def.region_phonetic + " from " + this._off.region_phonetic ); 
+        gameLog( team_key[this._off.side] + " attacks " + this._def.region_phonetic + " from " + this._off.region_phonetic ); 
         // document.getElementById("battleind").innerHTML = " - IN BATTLE AT " + defending_force.region_phonetic.toUpperCase();
     }
 
@@ -823,10 +823,11 @@ class Game{
     {
         // ADD LISTENER FOR REGION CLICK BY CURRENT PLAYER
         region_group_ids.forEach((id) => {
+            console.log("Added event listener for " + id);
             document.getElementById(id).addEventListener(
                 "click",
                 gameRegionClickCallback,
-                [false, false, ]
+                [false, false]
             );
             document.getElementById(id).obj = this;
         });
@@ -885,6 +886,7 @@ class Game{
         // re-clicking on the region to cancel movement.
         realtarget.classList.add("selected");
         // ADD LISTENER FOR CANCEL MOVEMENT
+        console.log("Added OTU event listener for " + realtarget + " click-to-cancel");
         realtarget.addEventListener(
             "click",
             gameSelectedRegionClickCallback,
@@ -898,6 +900,7 @@ class Game{
             node.classList.add("validmove");
 
             // ADD LISTENER FOR MOVING TROOPS
+            console.log("Added OTU event listener for " + realtarget + " move to " + validMove);
             node.addEventListener(
                 "click",
                 gameMoveRegionClickCallback,
@@ -917,11 +920,12 @@ class Game{
 
         e.currentTarget.classList.remove("selected");
 
+        // REMOVE LISTENERS FOR VALIDMOVES
         region_connections[e.currentTarget.id].forEach((validMove) => {
             let node = document.getElementById(validMove);
             node.classList.remove("validmove");
 
-            // REMOVE LISTENER FOR MOVING TROOPS
+            console.log("Removed OTU event listener for " + node.id + " move from " + e.currentTarget.id);
             node.removeEventListener(
                 "click",
                 gameMoveRegionClickCallback,
@@ -929,12 +933,21 @@ class Game{
             );
         });
 
-        e.currentTarget.addEventListener(
+        // REMOVE LISTENER FOR MOVING TROOPS
+        console.log("Removed OTU event listener for " + e.currentTarget.id + " click-to-cancel");
+        e.currentTarget.removeEventListener(
             "click",
-            gameRegionClickCallback,
-            [false, false]
+            gameSelectedRegionClickCallback,
+            [false, true]
         );
-        e.currentTarget.obj = this;
+
+            
+        // e.currentTarget.addEventListener(
+        //     "click",
+        //     gameRegionClickCallback,
+        //     [false, false]
+        // );
+        // e.currentTarget.obj = this;
     }
     
     //set this._currentPlayerTurn to "of" then back to "bf" in an alternating manner
@@ -962,12 +975,20 @@ class Game{
         region_connections[e.currentTarget.oc].forEach((validMove) => {
             let node = document.getElementById(validMove);
             node.classList.remove("validmove");
+            console.log("Removed OTU event listener for " + node.id + " move from " + e.currentTarget.oc);
             node.removeEventListener(
                 "click",
                 gameMoveRegionClickCallback,
-                false
+                [false, true]
             );
         });
+
+        console.log("Removed OTU event listener for " + e.currentTarget.oc + " click-to-cancel");
+        document.getElementById(e.currentTarget.oc).removeEventListener(
+            "click",
+            gameSelectedRegionClickCallback,
+            [false, true]
+        );
 
         //console.log(e.currentTarget.id);
         console.log("dst: " + e.currentTarget.id);
