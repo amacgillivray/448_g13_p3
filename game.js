@@ -711,17 +711,17 @@ class Battle {
             // partially restore casualties
             this._def.alterForce(
                 [
-                    (this._defRefCt[0]-this._def.infantryCount)*Math.random(),
-                    (this._defRefCt[1]-this._def.helicopterCount)*Math.random(),
-                    (this._defRefCt[1]-this._def.armorCount)*Math.random()
+                    Math.floor((this._defRefCt[0]-this._def.infantryCount)*Math.random()),
+                    Math.floor((this._defRefCt[1]-this._def.helicopterCount)*Math.random()),
+                    Math.floor((this._defRefCt[2]-this._def.armorCount)*Math.random())
                 ]
             );
             this._off._side = this._refSides[0];
             this._off.alterForce(
                 [
-                    (this._offRefCt[0]-this._off.infantryCount)*Math.random(),
-                    (this._offRefCt[1]-this._off.helicopterCount)*Math.random(),
-                    (this._offRefCt[1]-this._off.armorCount)*Math.random()
+                    Math.floor((this._offRefCt[0]-this._off.infantryCount)*Math.random()),
+                    Math.floor((this._offRefCt[1]-this._off.helicopterCount)*Math.random()),
+                    Math.floor((this._offRefCt[2]-this._off.armorCount)*Math.random())
                 ]
             );
 
@@ -747,9 +747,9 @@ class Battle {
 
             // restore defender losses if a fallback position exists
             let def_restored = [
-                (this._defRefCt[0])*Math.random()/2,
-                (this._defRefCt[1])*Math.random()/2,
-                (this._defRefCt[1])*Math.random()/2
+                Math.floor((this._defRefCt[0])*Math.random()/2),
+                Math.floor((this._defRefCt[1])*Math.random()/2),
+                Math.floor((this._defRefCt[1])*Math.random()/2)
             ];
             if (this._defFb != null)
                 this._defFb.alterForce(def_restored);
@@ -760,9 +760,9 @@ class Battle {
             // restore attacker losses 
             this._off.alterForce(
                 [
-                    (this._offRefCt[0]-this._off.infantryCount)*Math.random(),
-                    (this._offRefCt[1]-this._off.helicopterCount)*Math.random(),
-                    (this._offRefCt[1]-this._off.armorCount)*Math.random()
+                    Math.floor((2/3)*(this._offRefCt[0]-this._off.infantryCount)*Math.random()),
+                    Math.floor((2/3)*(this._offRefCt[1]-this._off.helicopterCount)*Math.random()),
+                    Math.floor((2/3)*(this._offRefCt[1]-this._off.armorCount)*Math.random())
                 ]
             );
 
@@ -777,11 +777,11 @@ class Battle {
             "ROTORCRAFT:  " + (this._off.helicopterCount - this._offRefCt[1]).toString() + "\n" +
             "ARMOR:       " + (this._off.helicopterCount - this._offRefCt[2]).toString() + "\n\n" +
             "             DEFENDER" + "\n" +
-            "INFANTRY:    " + (this._defRefCt[0] - def_restored[0]).toString() + "\n" +
-            "ROTORCRAFT:  " + (this._defRefCt[1] - def_restored[1]).toString() + "\n" +
-            "ARMOR:       " + (this._defRefCt[2] - def_restored[2]).toString();
+            "INFANTRY:    " + -(this._defRefCt[0] - def_restored[0]).toString() + "\n" +
+            "ROTORCRAFT:  " + -(this._defRefCt[1] - def_restored[1]).toString() + "\n" +
+            "ARMOR:       " + -(this._defRefCt[2] - def_restored[2]).toString();
             if (this._defFb != null)
-                troopLossRecord += "\n\nREMAINING DEFENDERS ROUTED TO " + region_phonetic_key[ this._defFb.region ];
+                troopLossRecord += "\n\n" + (def_restored[0]+def_restored[1]+def_restored[2]).toString() + " SURVIVING DEFENDERS\nROUTED TO " + region_phonetic_key[ this._defFb.region ].toUpperCase();
             troopLossRecord += "</pre>";
             
             // Update the owner of the cell to be the attacker, and move their troops there.
@@ -958,21 +958,41 @@ class Game{
     _changeTurn()
     {
         this.forces.forEach((force) => {
-            if (force.side == this._currentPlayerTurn)
+            if (force.side == this._currentPlayerTurn) 
                 document.getElementById(force.region).classList.toggle("cpt", false);
         });
 
+        // troop counts
         let bf_tc = 0;
         let of_tc = 0;
+
+        // region counts
+        let bf_rc = 0;
+        let of_rc = 0;
 
         for(let i = 0; i < this.forces.length; i++)
         {
             if (this.forces[i].side == "bf")
+            {
                 bf_tc += this.forces[i].totalCount;
+                bf_rc++;
+            }
             else if (this.forces[i].side == "of")
+            {
                 of_tc += this.forces[i].totalCount;
+                of_rc++;
+            }
         }
+
         document.getElementById("p_bfof").setAttribute("value", ((bf_tc)/(bf_tc+of_tc))*100);
+
+        if (bf_rc == 0)
+        {
+            this._handleWin("PACT (OPFOR)");
+        } else if (of_rc == 0)
+        {
+            this._handleWin("NATO (BLUFOR)");
+        }
 
         if(this._currentPlayerTurn == "bf"){
     		this._currentPlayerTurn = "of";
@@ -990,6 +1010,11 @@ class Game{
                     document.getElementById(force.region).classList.toggle("cpt", true);
                 }
         });
+    }
+
+    _handleWin( winteam )
+    {
+
     }
 
     _regionClickHandler( e )
