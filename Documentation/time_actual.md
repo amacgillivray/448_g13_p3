@@ -19,6 +19,9 @@ Total - 7 hours
 
 Nhat Nguyen
 3-29-2022 - 5 hours 
+3-31-2022 - 4 hours
+4-3-2022 - 2 hours
+Total - 11 hours
 
 Jarrod Grothusen
 3-29-2022 - 6 hours  
