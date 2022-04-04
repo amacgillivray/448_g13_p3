@@ -157,7 +157,7 @@ svg {
   stroke: #24cf8b !important;
   cursor: pointer;
 }
-
+ 
 .region.validmove polygon:hover {
   fill: #52ffbb !important;
   stroke: #24cf8b !important;
@@ -166,6 +166,10 @@ svg {
 
 .region.cpt polygon {
   opacity: 0.75;
+}
+
+.cpt polygon:hover {
+    cursor: pointer;
 }
 
 #container {
