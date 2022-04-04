@@ -1022,6 +1022,8 @@ class Game{
             document.getElementById(force.region).classList.toggle(winteam, true);
         });
 
+        document.getElementById("turn-indicator").innerHTML = team_key[winteam] + " VICTORY";
+
         gameLog(team_key[winteam] + " VICTORY.\nRefresh the page to play again!");
 
     }
@@ -1030,7 +1032,7 @@ class Game{
     {
         // Guard for state: ensure multiple regions cannot be selected
         // at once. 
-        if (this._state == "waitForMoveSelect") 
+        if (this._state == "waitForMoveSelect" || this._state == "battle") 
             return;
         this._state = "waitForMoveSelect";
 
@@ -1200,6 +1202,8 @@ class Game{
 
     battleEndCb()
     {
+        if (this._state != "battle")
+            return;
         this._state = "initial";
         this._changeTurn();
     }
