@@ -176,14 +176,14 @@ svg {
   align-items: center;
 }
 
-#log {
+#data-panel {
     display: flex;
     flex-direction: column;
     width: 250px;
     height: 400px;
     overflow-y: scroll;
     margin: 15px;
-    padding: 5px;
+    padding: 0px;
     background-color: #3e3e3e;
     font-family: 'courier new', monospace;
     font-size: 9px;
@@ -194,3 +194,28 @@ svg {
     color: #999;
     padding-right: 8px;
 }
+
+pre {
+    padding: 5px;
+    background: #1e1e1e;
+    margin-top: 0;
+    font-size: 8px;
+}
+
+#data-panel p {
+    padding: 5px;
+}
+
+.bluetext {
+    color: #85d4ef; 
+}
+.redtext {
+    color: #f39192;
+}
+
+/* 
+#data-panel
+{
+    font-size: 8px;
+    order: 999;
+} */

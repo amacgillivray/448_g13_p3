@@ -38,8 +38,8 @@ const troop_sizes = {
 };
 
 const team_key = {
-    bf: "NATO",
-    of: "PACT"
+    bf: "<span class=\"bluetext\">NATO</span>",
+    of: "<span class=\"redtext\">PACT</span>"
 };
 
 /**
@@ -314,7 +314,10 @@ class GameMap {
 
             // Make the appropriate troop count icon visible
             let sz = document.getElementById(node).querySelector("." + getBestTroopCountSymbol(unit.count));
-            
+            if (sz == null ){
+                alert("Unable to find size symbol for " + unit.side + " " + unit.type + " with count " + unit.count);
+                return;
+            }
             sz.classList.remove("tc_h");
             sz.classList.add("tc");
             //document.getElementById(node).querySelector("." + getBestTroopCountSymbol(unit.count)).setAttribute("class", "tc");
@@ -649,6 +652,8 @@ class Battle {
 
         gameLog( team_key[this._off.side] + " attacks " + this._def.region_phonetic + " from " + this._off.region_phonetic ); 
         // document.getElementById("battleind").innerHTML = " - IN BATTLE AT " + defending_force.region_phonetic.toUpperCase();
+        
+        //document.getElementById("s-" + this._off._side + "-" + this._def._region).classList.toggle("sh", false);
     }
 
     // called by the move handler fn when opposing armies try to 
