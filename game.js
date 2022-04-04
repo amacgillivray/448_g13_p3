@@ -421,6 +421,7 @@ class Force{
     // and give the respective buffs / debuffs vs other units. 
     distributeDamage( damage )
     {
+
         let types_present = 0;
         // let fractional_damage = 0;
         let newIc = 0;
@@ -475,7 +476,6 @@ class Force{
         }
 
         this.alterForce(af);
-
     }
 
     _determineSide()
@@ -639,6 +639,17 @@ class Battle {
     // occupy the same cell. 
     start()
     {
+    	//get the troop counts for off and def at start
+ 	    //need to make these 0 if the unit type is not in the force
+    	let offStartInf = this._off._infantryCount;
+    	let offStartHel = this._off._helicopterCount;
+    	let offStartArm = this._off._armorCount;
+
+    	let defStartInf = this._def._infantryCount;
+    	let defStartHel = this._def._helicopterCount;
+    	let defStartArm = this._def._armorCount;
+
+
         // while neither force is dead, call tick
         // then calculate % casualties returned to both players
 
@@ -663,7 +674,6 @@ class Battle {
         {
             // document.getElementById("battleind").innerHTML = "";
             gameLog( team_key[this._def.side] + " maintains control of " + this._def.region_phonetic + "." ); 
-            return;
         } else {
             gameLog( team_key[this._off.side] + " takes control of " + this._def.region_phonetic + "." );
             this._def._side = this._off.side;
@@ -683,6 +693,22 @@ class Battle {
             )
             // document.getElementById("battleind").innerHTML = "";
         }
+
+        //calculate the lost troops for the off and def
+        //need to make these 0 if the unit type is not in the force
+        let offLostInf = offStartInf - this._off._infantryCount;
+    	let offLostHel = offStartHel - this._off._helicopterCount;
+    	let offLostArm = offStartArm - this._off._armorCount;
+
+    	let defLostInf = defStartInf - this._def._infantryCount;
+    	let defLostHel = defStartHel - this._def._helicopterCount;
+    	let defLostArm = defStartArm - this._def._armorCount;
+
+    	gameLog(this._off._infantryCount);
+    	// gameLog( this._off._side + " lost " + offLostInf " infantry, " + offLostHel + " helicopters, and " + offLostArm + " armored units." );
+    	// gameLog( this._def._side + " lost " + defLostInf " infantry, " + defLostHel + " helicopters, and " + defLostArm + " armored units." );
+
+    	return;
     }
 
     /**
