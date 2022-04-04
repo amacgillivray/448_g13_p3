@@ -1020,6 +1020,7 @@ class Game{
         this.forces.forEach((force) => { 
             document.getElementById(force.region).classList.toggle("neutral", false);
             document.getElementById(force.region).classList.toggle(winteam, true);
+            document.getElementById("s-" + winteam + "-" + force.region).classList.toggle("sh", false);
         });
 
         document.getElementById("turn-indicator").innerHTML = team_key[winteam] + " VICTORY";
