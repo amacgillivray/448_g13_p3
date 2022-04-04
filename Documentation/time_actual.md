@@ -9,6 +9,10 @@ Nhat Nguyen
 
 Jarrod Grothusen
 3-29-2022 - 6 hours  
+3-31-2022 - 3 hours
+4-1-2022 - 6 hours
+4-3-2022 - 4 hours
+Total - 19 hours
 
 Brian Bosse
 ?-?-? - ???
