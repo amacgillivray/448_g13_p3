@@ -654,6 +654,11 @@ class Battle {
             this._def.armorCount
         ];
 
+        this._refSides = [
+            this._off.side, 
+            this._def.side
+        ];
+
         this._ticks = 0;
 
         //log.innerHTML += "<p>" + this._off.side.toUpperCase() + " attacked " + this._def.region_phonetic + " from " + this._off.region_phonetic + "</p>\n";
@@ -695,11 +700,44 @@ class Battle {
             "INFANTRY:    " + (this._def.infantryCount - this._defRefCt[0]).toString() + "\n" +
             "ROTORCRAFT:  " + (this._def.helicopterCount - this._defRefCt[1]).toString() + "\n" +
             "ARMOR:       " + (this._def.helicopterCount - this._defRefCt[2]).toString() +
-            "</pre>"
+            "</pre>";
 
         if (this._off.totalCount == 0)
         {
-            gameLog( team_key[this._def.side] + " maintains control of " + this._def.region_phonetic + "." + troopLossRecord); 
+
+            // partially restore casualties
+            this._def.alterForce(
+                [
+                    (this._defRefCt[0]-this._def.infantryCount)*Math.random(),
+                    (this._defRefCt[1]-this._def.helicopterCount)*Math.random(),
+                    (this._defRefCt[1]-this._def.armorCount)*Math.random()
+                ]
+            );
+            this._off._side = this._refSides[0];
+            this._off.alterForce(
+                [
+                    (this._offRefCt[0]-this._off.infantryCount)*Math.random(),
+                    (this._offRefCt[1]-this._off.helicopterCount)*Math.random(),
+                    (this._offRefCt[1]-this._off.armorCount)*Math.random()
+                ]
+            );
+
+            troopLossRecord = 
+            "<pre>" +
+            "LOSSES:\n" +
+            "-------\n" +
+            "             ATTACKER" + "\n" +
+            "INFANTRY:    " + (this._off.infantryCount - this._offRefCt[0]).toString() + "\n" +
+            "ROTORCRAFT:  " + (this._off.helicopterCount - this._offRefCt[1]).toString() + "\n" +
+            "ARMOR:       " + (this._off.helicopterCount - this._offRefCt[2]).toString() + "\n\n" +
+            "             DEFENDER" + "\n" +
+            "INFANTRY:    " + (this._def.infantryCount - this._defRefCt[0]).toString() + "\n" +
+            "ROTORCRAFT:  " + (this._def.helicopterCount - this._defRefCt[1]).toString() + "\n" +
+            "ARMOR:       " + (this._def.helicopterCount - this._defRefCt[2]).toString() +
+            "</pre>";
+
+            gameLog( team_key[this._def.side] + " maintains control of " + this._def.region_phonetic + "." + troopLossRecord);
+
         } else {
             gameLog( team_key[this._off.side] + " takes control of " + this._def.region_phonetic + "." + troopLossRecord );
             this._def._side = this._off.side;
@@ -768,7 +806,8 @@ class Battle {
         this._def.distributeDamage(dmgo);
 
         if ( this._off.totalCount <= 0 || this._def.totalCount <= 0 )
-        {
+        {        
+            this._drawProgress();
             this.end();
         }
 
