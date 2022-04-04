@@ -713,7 +713,7 @@ class Battle {
                 [
                     Math.floor((this._defRefCt[0]-this._def.infantryCount)*Math.random()),
                     Math.floor((this._defRefCt[1]-this._def.helicopterCount)*Math.random()),
-                    Math.floor((this._defRefCt[1]-this._def.armorCount)*Math.random())
+                    Math.floor((this._defRefCt[2]-this._def.armorCount)*Math.random())
                 ]
             );
             this._off._side = this._refSides[0];
@@ -721,7 +721,7 @@ class Battle {
                 [
                     Math.floor((this._offRefCt[0]-this._off.infantryCount)*Math.random()),
                     Math.floor((this._offRefCt[1]-this._off.helicopterCount)*Math.random()),
-                    Math.floor((this._offRefCt[1]-this._off.armorCount)*Math.random())
+                    Math.floor((this._offRefCt[2]-this._off.armorCount)*Math.random())
                 ]
             );
 
