@@ -989,10 +989,12 @@ class Game{
 
         if (bf_rc == 0)
         {
-            this._handleWin("PACT (OPFOR)");
+            this._handleWin("of");
+            return;
         } else if (of_rc == 0)
         {
-            this._handleWin("NATO (BLUFOR)");
+            this._handleWin("bf");
+            return;
         }
 
         if(this._currentPlayerTurn == "bf"){
@@ -1015,6 +1017,12 @@ class Game{
 
     _handleWin( winteam )
     {
+        this.forces.forEach((force) => { 
+            document.getElementById(force.region).classList.toggle("neutral", false);
+            document.getElementById(force.region).classList.toggle(winteam, true);
+        });
+
+        gameLog(team_key[winteam] + " VICTORY.\nRefresh the page to play again!");
 
     }
 
