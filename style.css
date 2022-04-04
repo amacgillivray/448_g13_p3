@@ -222,6 +222,37 @@ p pre {
     color: #f39192;
 }
 
+#progress,
+#p_bfof {
+    margin: 0;
+    padding: 0;
+}
+
+#p_bfof {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    box-sizing: border-box;
+}
+
+progress[value]::-webkit-progress-bar {
+    background-color: #f39192;
+}
+
+progress[value]::-webkit-progress-value {
+    background-color: #85d4ef;
+}
+
+#p_battle::-webkit-progress-bar {
+    background-color: #ff4142;
+}
+
+#p_battle::-webkit-progress-value {
+    background-color: #4141ff;
+}
+
+
 /* 
 #data-panel
 {
