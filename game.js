@@ -625,6 +625,11 @@ class Terrain{
 	}
 }
 
+function battleCb( obj )
+{
+    obj._tick();
+}
+
 class Battle {
 
     /**
@@ -653,36 +658,30 @@ class Battle {
 
         //log.innerHTML += "<p>" + this._off.side.toUpperCase() + " attacked " + this._def.region_phonetic + " from " + this._off.region_phonetic + "</p>\n";
 
-        gameLog( team_key[this._off.side] + " attacks " + this._def.region_phonetic + " from " + this._off.region_phonetic ); 
+        gameLog( 
+            team_key[this._off.side] + 
+            " attacks " + this._def.region_phonetic + 
+            " from " + this._off.region_phonetic + 
+            "<br/><progress id=\"p_battle_" + battle_ct + "\" class=\"battle\" max=\"100\" value=\"50\"></progress>"); 
+        // document.getElementById("p_bfof").setAttribute("class", "battle");
+        
+        // this._interval = null
         // document.getElementById("battleind").innerHTML = " - IN BATTLE AT " + defending_force.region_phonetic.toUpperCase();
         
         //document.getElementById("s-" + this._off._side + "-" + this._def._region).classList.toggle("sh", false);
     }
 
-    // called by the move handler fn when opposing armies try to 
-    // occupy the same cell. 
     start()
     {
+        this._interval = setInterval(battleCb, [200], this);
+    }
 
-        // while neither force is dead, call tick
-        // then calculate % casualties returned to both players
 
-        // send the defeated army to a nearby allied/neutral cell, or 
-        // delete the entire defeated army if no such cell is available
-        //alert("Starting battle!");
-
-        document.getElementById("p_bfof").setAttribute("class", "sh");
-        document.getElementById("p_battle").setAttribute("class", "");
-        
-        while( this._off.totalCount > 0 && this._def.totalCount > 0 )
-        {
-            //setTimeout(()=>this._tick(), 1000);
-            this._tick();
-            // console.log("Tick #" + this._ticks);
-            // // this._tick();
-            // setTimeout(()=>this._tick(), 1000*this._ticks);
-            // this._ticks++;
-        }
+    // called by the move handler fn when opposing armies try to 
+    // occupy the same cell. 
+    end()
+    {
+        clearInterval(this._interval);
 
         let troopLossRecord = 
             "<pre>" +
@@ -700,7 +699,6 @@ class Battle {
 
         if (this._off.totalCount == 0)
         {
-            // document.getElementById("battleind").innerHTML = "";
             gameLog( team_key[this._def.side] + " maintains control of " + this._def.region_phonetic + "." + troopLossRecord); 
         } else {
             gameLog( team_key[this._off.side] + " takes control of " + this._def.region_phonetic + "." + troopLossRecord );
@@ -718,16 +716,11 @@ class Battle {
                     (-1)*this._off.helicopterCount,
                     (-1)*this._off.armorCount
                 ]
-            )
-            // document.getElementById("battleind").innerHTML = "";
+            );
         }
 
-        document.getElementById("p_bfof").setAttribute("class", "");
-        document.getElementById("p_battle").setAttribute("class", "sh");
-
-        // gameLog(troopLossRecord);
-    	// gameLog( this._off._side + " lost " + offLostInf " infantry, " + offLostHel + " helicopters, and " + offLostArm + " armored units." );
-    	// gameLog( this._def._side + " lost " + defLostInf " infantry, " + defLostHel + " helicopters, and " + defLostArm + " armored units." );
+        battle_ct++;
+        game.battleEndCb();
 
     	return;
     }
@@ -768,15 +761,16 @@ class Battle {
         if (this._def.armor != null)
             dmgd += this._def.armorCount * this._def.armor.dmgMod * Math.random();
 
-        do {
-            now = Date.now();
-        } while (now-s < 200);
-
         // Deal damage to offense
         this._off.distributeDamage(dmgd);
 
         // Deal damage to defense
         this._def.distributeDamage(dmgo);
+
+        if ( this._off.totalCount <= 0 || this._def.totalCount <= 0 )
+        {
+            this.end();
+        }
 
         return;
     }
@@ -785,9 +779,9 @@ class Battle {
     {
         if (this._off.side == "of")
         {
-            document.getElementById("p_battle").setAttribute("value", (this._def.totalCount/(this._def.totalCount+this._off.totalCount+1))*50);
+            document.getElementById("p_battle_" + battle_ct).setAttribute("value", (this._def.totalCount/(this._def.totalCount+this._off.totalCount+1))*100);
         } else {
-            document.getElementById("p_battle").setAttribute("value", (this._off.totalCount/(this._off.totalCount+this._def.totalCount+1))*50);
+            document.getElementById("p_battle_" + battle_ct).setAttribute("value", (this._off.totalCount/(this._off.totalCount+this._def.totalCount+1))*100);
         }
     }
 
@@ -1055,8 +1049,6 @@ class Game{
             this._state = "battle";
             let battle = new Battle(dstForce, srcForce);
             battle.start();
-            this._state = "initial";
-            this._changeTurn();
             return;
         }
 
@@ -1080,7 +1072,14 @@ class Game{
         this._changeTurn();
 
     }
+
+    battleEndCb()
+    {
+        this._state = "initial";
+        this._changeTurn();
+    }
 }
 
 let game = new Game;
 let log_entries = 0;
+let battle_ct = 0;
