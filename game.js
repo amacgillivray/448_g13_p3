@@ -659,6 +659,19 @@ class Battle {
             this._def.side
         ];
 
+        // Choose a location for defender casualties to 
+        // retreat to in case of defeat.
+        this._defFb = null;
+        let avail_fb = region_connections[this._def.region];
+        for (let i = 0; i < avail_fb.length; i++)
+        {
+            for (let e = 0; e < game.forces.length; e++)
+            {
+                if (game.forces[e].region == avail_fb[i] && game.forces[e].side == this._def.side)
+                    this._defFb = game.forces[e];
+            }
+        }
+
         this._ticks = 0;
 
         //log.innerHTML += "<p>" + this._off.side.toUpperCase() + " attacked " + this._def.region_phonetic + " from " + this._off.region_phonetic + "</p>\n";
@@ -688,19 +701,9 @@ class Battle {
     {
         clearInterval(this._interval);
 
-        let troopLossRecord = 
-            "<pre>" +
-            "LOSSES:\n" +
-            "-------\n" +
-            "             ATTACKER" + "\n" +
-            "INFANTRY:    " + (this._off.infantryCount - this._offRefCt[0]).toString() + "\n" +
-            "ROTORCRAFT:  " + (this._off.helicopterCount - this._offRefCt[1]).toString() + "\n" +
-            "ARMOR:       " + (this._off.helicopterCount - this._offRefCt[2]).toString() + "\n\n" +
-            "             DEFENDER" + "\n" +
-            "INFANTRY:    " + (this._def.infantryCount - this._defRefCt[0]).toString() + "\n" +
-            "ROTORCRAFT:  " + (this._def.helicopterCount - this._defRefCt[1]).toString() + "\n" +
-            "ARMOR:       " + (this._def.helicopterCount - this._defRefCt[2]).toString() +
-            "</pre>";
+        let winside = "";
+        let verb = "";
+        let troopLossRecord = "";
 
         if (this._off.totalCount == 0)
         {
@@ -722,6 +725,8 @@ class Battle {
                 ]
             );
 
+            winside = team_key[this._def.side];
+            verb = "maintains";
             troopLossRecord = 
             "<pre>" +
             "LOSSES:\n" +
@@ -736,10 +741,50 @@ class Battle {
             "ARMOR:       " + (this._def.helicopterCount - this._defRefCt[2]).toString() +
             "</pre>";
 
-            gameLog( team_key[this._def.side] + " maintains control of " + this._def.region_phonetic + "." + troopLossRecord);
-
         } else {
-            gameLog( team_key[this._off.side] + " takes control of " + this._def.region_phonetic + "." + troopLossRecord );
+            winside = team_key[this._off.side];
+            verb = "takes";
+
+            // restore defender losses if a fallback position exists
+            let def_restored = [
+                (this._defRefCt[0])*Math.random()/2,
+                (this._defRefCt[1])*Math.random()/2,
+                (this._defRefCt[1])*Math.random()/2
+            ];
+            if (this._defFb != null)
+                this._defFb.alterForce(def_restored);
+            else 
+                def_restored = [0,0,0];
+
+
+            // restore attacker losses 
+            this._off.alterForce(
+                [
+                    (this._offRefCt[0]-this._off.infantryCount)*Math.random(),
+                    (this._offRefCt[1]-this._off.helicopterCount)*Math.random(),
+                    (this._offRefCt[1]-this._off.armorCount)*Math.random()
+                ]
+            );
+
+            // create the loss record using the numbers from AFTER restorations are performed
+            // provide notice of where the defenders routed to
+            troopLossRecord = 
+            "<pre>" +
+            "LOSSES:\n" +
+            "-------\n" +
+            "             ATTACKER" + "\n" +
+            "INFANTRY:    " + (this._off.infantryCount - this._offRefCt[0]).toString() + "\n" +
+            "ROTORCRAFT:  " + (this._off.helicopterCount - this._offRefCt[1]).toString() + "\n" +
+            "ARMOR:       " + (this._off.helicopterCount - this._offRefCt[2]).toString() + "\n\n" +
+            "             DEFENDER" + "\n" +
+            "INFANTRY:    " + (this._defRefCt[0] - def_restored[0]).toString() + "\n" +
+            "ROTORCRAFT:  " + (this._defRefCt[1] - def_restored[1]).toString() + "\n" +
+            "ARMOR:       " + (this._defRefCt[2] - def_restored[2]).toString();
+            if (this._defFb != null)
+                troopLossRecord += "\n\nREMAINING DEFENDERS ROUTED TO " + region_phonetic_key[ this._defFb.region ];
+            troopLossRecord += "</pre>";
+            
+            // Update the owner of the cell to be the attacker, and move their troops there.
             this._def._side = this._off.side;
             this._def.alterForce(
                 [
@@ -748,6 +793,7 @@ class Battle {
                     this._off.armorCount
                 ]
             );
+
             this._off.alterForce(
                 [
                     (-1)*this._off.infantryCount,
@@ -755,7 +801,13 @@ class Battle {
                     (-1)*this._off.armorCount
                 ]
             );
+
+            
+
         }
+
+        
+        gameLog( winside + " " + verb + " control of " + this._def.region_phonetic + "." + troopLossRecord);
 
         battle_ct++;
         game.battleEndCb();
