@@ -143,8 +143,6 @@ const opfor_prefix = "of";
  */
 const blufor_prefix = "bf";
 
-const wait = (ms) => new Promise ( (resolve) => setTimeout( resolve , ms ) )
-
 
 function gameLog( message, classlist = "" )
 {
@@ -342,13 +340,6 @@ class Force{
 
 	//getters
 	get side(){
-		// for(i = 0; i < 3; i++){
-		// 	if(this.unitList[i] != null){
-		// 		return this.unitList[i].side;
-		// 	}else if(i == 2){
-		// 		return "neutral";
-		// 	}
-		// }
         return this._side;
 	}
 	get region(){
@@ -680,17 +671,17 @@ class Battle {
         // delete the entire defeated army if no such cell is available
         //alert("Starting battle!");
 
+        document.getElementById("p_bfof").setAttribute("class", "sh");
+        document.getElementById("p_battle").setAttribute("class", "");
+        
         while( this._off.totalCount > 0 && this._def.totalCount > 0 )
         {
             //setTimeout(()=>this._tick(), 1000);
             this._tick();
-
             // console.log("Tick #" + this._ticks);
             // // this._tick();
             // setTimeout(()=>this._tick(), 1000*this._ticks);
             // this._ticks++;
-
-
         }
 
         let troopLossRecord = 
@@ -731,6 +722,9 @@ class Battle {
             // document.getElementById("battleind").innerHTML = "";
         }
 
+        document.getElementById("p_bfof").setAttribute("class", "");
+        document.getElementById("p_battle").setAttribute("class", "sh");
+
         // gameLog(troopLossRecord);
     	// gameLog( this._off._side + " lost " + offLostInf " infantry, " + offLostHel + " helicopters, and " + offLostArm + " armored units." );
     	// gameLog( this._def._side + " lost " + defLostInf " infantry, " + defLostHel + " helicopters, and " + defLostArm + " armored units." );
@@ -750,7 +744,8 @@ class Battle {
 
         console.log("Tick #" + this._ticks);
         this._ticks++;
-        
+        this._drawProgress();
+
         // Damage by attackers
         let dmgo = 0;
 
@@ -773,11 +768,6 @@ class Battle {
         if (this._def.armor != null)
             dmgd += this._def.armorCount * this._def.armor.dmgMod * Math.random();
 
-        // await wait(1000);
-
-        // if (this._off.totalCount == 0 || this._def.totalCount == 0)
-        //     return; 
-
         do {
             now = Date.now();
         } while (now-s < 200);
@@ -789,22 +779,16 @@ class Battle {
         this._def.distributeDamage(dmgo);
 
         return;
+    }
 
-        // Wait
-        //wait(1000).then(() => {return});
-        //wait(1000);
-
-        // [this._off, this._def].forEach((force) => {
-        //     let dmgMap = [0,0,0];
-        //     if (force.infantry != null)
-        //         dmgMap[0] = 1;
-        //     if (force.helicopter != null)
-        //         dmgMap[1] = 1;
-        //     if (force.armor != null)
-        //         dmgMap[2] = 1;
-            
-        // });
-
+    _drawProgress()
+    {
+        if (this._off.side == "of")
+        {
+            document.getElementById("p_battle").setAttribute("value", (this._def.totalCount/(this._def.totalCount+this._off.totalCount+1))*50);
+        } else {
+            document.getElementById("p_battle").setAttribute("value", (this._off.totalCount/(this._off.totalCount+this._def.totalCount+1))*50);
+        }
     }
 
 }
@@ -892,6 +876,18 @@ class Game{
             if (force.side == this._currentPlayerTurn)
                 document.getElementById(force.region).classList.toggle("cpt", false);
         });
+
+        let bf_tc = 0;
+        let of_tc = 0;
+
+        for(let i = 0; i < this.forces.length; i++)
+        {
+            if (this.forces[i].side == "bf")
+                bf_tc += this.forces[i].totalCount;
+            else if (this.forces[i].side == "of")
+                of_tc += this.forces[i].totalCount;
+        }
+        document.getElementById("p_bfof").setAttribute("value", ((bf_tc)/(bf_tc+of_tc))*100);
 
         if(this._currentPlayerTurn == "bf"){
     		this._currentPlayerTurn = "of";
