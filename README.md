@@ -1,10 +1,8 @@
 # 448_g13_p3
 **EECS 448, Group 13, Project 3**
 
-![demo-2r](https://user-images.githubusercontent.com/40438470/160699786-9af2a8b4-62f1-4ea7-ab64-c57cb734e1af.png)
-
-
 This project shows the prototype of a "milsim" style strategy game, where 2 players compete for control over a region.
+![image](https://user-images.githubusercontent.com/40438470/181318006-dc4a939a-3941-460a-8d75-0d735426269f.png)
 
 ## Game Rules: 
 
@@ -73,4 +71,9 @@ The player then splits each unit type into smaller sizes (see *Unit Sizes*) in o
 In battle, each of the three flanks fights the corresponding flank of the opposing side. Once the corresponding opposite flank is empty, the winning force's units in that position fight the next weakest enemy flank and gain a slight advantage in battle.
 Once one side has been retreated, a pseudo-random percentage of casualties are restored to both sides, and the winner takes ownership of the region while the loser's regained troops move to a nearby cell.
 
- 
+
+### Conception
+
+Original concept image: 
+![demo-2r](https://user-images.githubusercontent.com/40438470/160699786-9af2a8b4-62f1-4ea7-ab64-c57cb734e1af.png)
+
